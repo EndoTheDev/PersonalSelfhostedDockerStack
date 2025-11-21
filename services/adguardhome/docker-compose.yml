@@ -11,7 +11,7 @@ services:
       # - "80:80/tcp" # AdGuard Home web UI (internal port 80)
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.adguardhome.rule=Host(`adguard.endothe.dev`)"
+      - "traefik.http.routers.adguardhome.rule=Host(`adguard.${DOMAIN}`)"
       - "traefik.http.services.adguardhome.loadbalancer.server.port=3000" # Traefik forwards to internal port 80
     networks:
       - frontend

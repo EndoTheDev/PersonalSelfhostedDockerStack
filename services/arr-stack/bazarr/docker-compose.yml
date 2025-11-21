@@ -12,7 +12,7 @@ services:
       - /mnt/hdd/media/tvshows:/tv
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bazarr.rule=Host(`bazarr.endothe.dev`)"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.${DOMAIN}`)"
       - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
     networks:
       - frontend

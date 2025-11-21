@@ -6,16 +6,16 @@ services:
       - ./data:/home/node/.n8n
     environment:
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_HOST=n8n.endothe.dev
+      - N8N_HOST=n8n.${DOMAIN}
       - N8N_PROTOCOL=https
-      - WEBHOOK_URL=https://n8n.endothe.dev/
-      - N8N_EDITOR_BASE_URL=https://n8n.endothe.dev/
+      - WEBHOOK_URL=https://n8n.${DOMAIN}/
+      - N8N_EDITOR_BASE_URL=https://n8n.${DOMAIN}/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`n8n.endothe.dev`)"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.${DOMAIN}`)"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
       - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Host=n8n.endothe.dev"
+      - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Host=n8n.${DOMAIN}"
       - "traefik.http.routers.n8n.middlewares=n8n-headers"
     networks:
       - frontend

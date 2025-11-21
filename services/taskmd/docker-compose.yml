@@ -12,7 +12,7 @@ services:
       - LOCAL_IMAGES_CLEANUP_INTERVAL=1440
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.taskmd.rule=Host(`taskmd.endothe.dev`)"
+      - "traefik.http.routers.taskmd.rule=Host(`taskmd.${DOMAIN}`)"
       - "traefik.http.services.taskmd.loadbalancer.server.port=8080"
     networks:
       - frontend

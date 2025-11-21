@@ -12,7 +12,7 @@ services:
       - /mnt/hdd/downloads:/downloads
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lidarr.rule=Host(`lidarr.endothe.dev`)"
+      - "traefik.http.routers.lidarr.rule=Host(`lidarr.${DOMAIN}`)"
       - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
     networks:
       - frontend

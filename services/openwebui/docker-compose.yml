@@ -10,7 +10,7 @@ services:
       - "host.docker.internal:host-gateway"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.openwebui.rule=Host(`open-webui.endothe.dev`)"
+      - "traefik.http.routers.openwebui.rule=Host(`open-webui.${DOMAIN}`)"
       - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
     networks:
       - frontend

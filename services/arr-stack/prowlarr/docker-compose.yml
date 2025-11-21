@@ -10,7 +10,7 @@ services:
       - ./data:/config
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.endothe.dev`)"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${DOMAIN}`)"
       - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
     networks:
       - frontend

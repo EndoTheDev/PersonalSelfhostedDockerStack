@@ -21,7 +21,7 @@ services:
       # SYS_TIME is not needed if Pi-hole isn't NTP client
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole.endothe.dev`)"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
       # Pi-hole's web UI is on port 80 by default, so Traefik will pick this up.
       # No need for traefik.http.services.pihole.loadbalancer.server.port

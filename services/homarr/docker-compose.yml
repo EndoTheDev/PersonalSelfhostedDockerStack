@@ -9,7 +9,7 @@ services:
       - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.homarr.rule=Host(`homarr.endothe.dev`)"
+      - "traefik.http.routers.homarr.rule=Host(`homarr.${DOMAIN}`)"
       - "traefik.http.services.homarr.loadbalancer.server.port=7575"
     networks:
       - frontend

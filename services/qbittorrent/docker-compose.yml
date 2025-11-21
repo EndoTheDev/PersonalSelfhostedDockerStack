@@ -13,7 +13,7 @@ services:
       - /mnt/hdd/downloads:/downloads
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.endothe.dev`)"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${DOMAIN}`)"
       - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
     ports:
       - "6881:6881"
