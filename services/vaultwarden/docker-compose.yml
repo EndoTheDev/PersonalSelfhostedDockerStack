@@ -1,0 +1,23 @@
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    environment:
+      - DOMAIN=https://vaultwarden.endothe.dev
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.endothe.dev`)"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,23 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/appdata
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homarr.rule=Host(`homarr.endothe.dev`)"
+      - "traefik.http.services.homarr.loadbalancer.server.port=7575"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

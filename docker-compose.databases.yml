@@ -1,0 +1,15 @@
+name: databases
+services:
+  qdrant:
+    extends:
+      file: services/qdrant/docker-compose.yml
+      service: qdrant
+  redis:
+    extends:
+      file: services/redis/docker-compose.yml
+      service: redis
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

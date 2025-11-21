@@ -1,0 +1,32 @@
+services:
+  lidarr:
+    container_name: lidarr
+    image: lscr.io/linuxserver/lidarr:latest
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/config
+      - /mnt/hdd/media/music:/music
+      - /mnt/hdd/downloads:/downloads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lidarr.rule=Host(`lidarr.endothe.dev`)"
+      - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8686/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

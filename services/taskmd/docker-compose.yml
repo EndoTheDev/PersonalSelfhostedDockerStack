@@ -1,0 +1,26 @@
+services:
+  taskmd:
+    container_name: taskmd
+    image: baldissaramatheus/tasks.md
+    volumes:
+      - ./config:/config
+      - ./data:/tasks
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TITLE=Tasks.md
+      - LOCAL_IMAGES_CLEANUP_INTERVAL=1440
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.taskmd.rule=Host(`taskmd.endothe.dev`)"
+      - "traefik.http.services.taskmd.loadbalancer.server.port=8080"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,16 @@
+name: ai-services
+services:
+  openwebui:
+    extends:
+      file: services/openwebui/docker-compose.yml
+      service: openwebui
+  n8n:
+    extends:
+      file: services/n8n/docker-compose.yml
+      service: n8n
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,21 @@
+services:
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    volumes:
+      - ./config:/etc/searxng:rw
+    environment:
+      - SEARXNG_REDIS_URL=redis://redis:6379/0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.searxng.rule=Host(`searxng.endothe.dev`)"
+      - "traefik.http.services.searxng.loadbalancer.server.port=8080"
+    networks:
+      - frontend
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,27 @@
+services:
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./data:/data
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  backend:
+    external: true

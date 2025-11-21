@@ -1,0 +1,29 @@
+name: services
+services:
+  website:
+    extends:
+      file: services/website/docker-compose.yml
+      service: website
+  homarr:
+    extends:
+      file: services/homarr/docker-compose.yml
+      service: homarr
+  taskmd:
+    extends:
+      file: services/taskmd/docker-compose.yml
+      service: taskmd
+  vaultwarden:
+    extends:
+      file: services/vaultwarden/docker-compose.yml
+      service: vaultwarden
+  searxng:
+    extends:
+      file: services/searxng/docker-compose.yml
+      service: searxng
+
+      
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

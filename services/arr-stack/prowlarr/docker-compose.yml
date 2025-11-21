@@ -1,0 +1,30 @@
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.endothe.dev`)"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9696/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,20 @@
+name: monitoring
+services:
+  dozzle:
+    extends:
+      file: services/dozzle/docker-compose.yml
+      service: dozzle
+  whoami:
+    extends:
+      file: services/whoami/docker-compose.yml
+      service: whoami
+  uptime-kuma:
+    extends:
+      file: services/uptime-kuma/docker-compose.yml
+      service: uptime-kuma
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

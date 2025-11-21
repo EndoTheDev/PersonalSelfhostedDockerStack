@@ -1,0 +1,18 @@
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:v3.3
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /usr/share/zoneinfo/Asia/Bangkok:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config:/etc/traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.endothe.dev`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped

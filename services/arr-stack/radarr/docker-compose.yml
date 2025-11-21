@@ -1,0 +1,32 @@
+services:
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/config
+      - /mnt/hdd/media/movies:/movies
+      - /mnt/hdd/downloads:/downloads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.endothe.dev`)"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

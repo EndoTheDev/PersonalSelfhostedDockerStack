@@ -1,0 +1,32 @@
+services:
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/config
+      - /mnt/hdd/media/tvshows:/tv
+      - /mnt/hdd/downloads:/downloads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.endothe.dev`)"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8989/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

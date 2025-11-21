@@ -1,0 +1,33 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports: # <--- ADD THIS SECTION 
+      - "53:53/tcp" 
+      - "53:53/udp"
+    environment:
+      TZ: 'Asia/Bangkok'
+      FTLCONF_webserver_api_password: 'correct horse battery staple'
+      FTLCONF_dns_listeningMode: 'all' # Important for Docker networking
+    volumes:
+      - './data:/etc/pihole'
+      # Persist Pi-hole's core configuration and databases
+      # The original config also had './etc-dnsmasq.d:/etc/dnsmasq.d' commented out.
+      # I'll keep it commented unless you need custom dnsmasq configs persisted.
+      #- './etc-dnsmasq.d:/etc/dnsmasq.d'
+    cap_add:
+      - SYS_NICE # Optional, for potentially better processing time
+      # NET_ADMIN is not needed if Pi-hole isn't DHCP server
+      # SYS_TIME is not needed if Pi-hole isn't NTP client
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.endothe.dev`)"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      # Pi-hole's web UI is on port 80 by default, so Traefik will pick this up.
+      # No need for traefik.http.services.pihole.loadbalancer.server.port
+      # No 'ports' section needed here if DNS is accessed via Tailscale and WebUI via Traefik.
+      # Pi-hole container will listen on 53/tcp, 53/udp, 80/tcp internally.
+      # Traefik handles port 80 exposure. Tailscale handles port 53 exposure.
+    networks:
+      - frontend # For Traefik to reach the WebUI
+    restart: unless-stopped

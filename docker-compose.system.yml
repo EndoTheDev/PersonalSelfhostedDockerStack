@@ -1,0 +1,25 @@
+name: system-services
+services:
+  cloudflared:
+    extends:
+      file: services/cloudflared/docker-compose.yml
+      service: cloudflared
+  traefik:
+    extends:
+      file: services/traefik/docker-compose.yml
+      service: traefik
+  pihole:
+    extends:
+      file: services/pihole/docker-compose.yml
+      service: pihole
+  watchtower:
+    extends:
+      file: services/watchtower/docker-compose.yml
+      service: watchtower
+
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true
