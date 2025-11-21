@@ -7,7 +7,7 @@ services:
       - "53:53/udp"
     environment:
       TZ: 'Asia/Bangkok'
-      FTLCONF_webserver_api_password: 'correct horse battery staple'
+      FTLCONF_webserver_api_password: '${PIHOLE_API_PASSWORD}'
       FTLCONF_dns_listeningMode: 'all' # Important for Docker networking
     volumes:
       - './data:/etc/pihole'

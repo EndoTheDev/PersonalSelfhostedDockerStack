@@ -6,10 +6,10 @@ services:
       - ./data:/home/node/.n8n
     environment:
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_HOST=n8n.${DOMAIN}
-      - N8N_PROTOCOL=https
-      - WEBHOOK_URL=https://n8n.${DOMAIN}/
-      - N8N_EDITOR_BASE_URL=https://n8n.${DOMAIN}/
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_EDITOR_BASE_URL=${N8N_EDITOR_BASE_URL}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.n8n.rule=Host(`n8n.${DOMAIN}`)"

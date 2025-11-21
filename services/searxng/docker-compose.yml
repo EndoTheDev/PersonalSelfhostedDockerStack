@@ -5,7 +5,7 @@ services:
     volumes:
       - ./config:/etc/searxng:rw
     environment:
-      - SEARXNG_REDIS_URL=redis://redis:6379/0
+      - SEARXNG_REDIS_URL=${REDIS_URL}/${REDIS_DB_SEARCH}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.searxng.rule=Host(`searxng.${DOMAIN}`)"
