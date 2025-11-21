@@ -55,7 +55,7 @@ A comprehensive, production-ready self-hosted infrastructure stack built with Do
 ### Core Services
 - **Website**: Personal website/portfolio
 - **Homarr**: Modern dashboard for your services
-- **TaskMD**: Task management and note-taking
+- **Tududi**: Advanced task and project management with areas, recurring tasks, and rich notes
 - **Vaultwarden**: Bitwarden-compatible password manager
 - **SearXNG**: Privacy-focused metasearch engine
 
@@ -123,6 +123,7 @@ Services are typically accessible via Traefik routes. Default domain setup assum
 
 Common service URLs:
 - Homarr Dashboard: `https://homarr.endothe.dev`
+- Tududi: `https://tududi.endothe.dev`
 - Jellyfin: `https://jellyfin.endothe.dev`
 - Vaultwarden: `https://vaultwarden.endothe.dev`
 - OpenWebUI: `https://open-webui.endothe.dev`

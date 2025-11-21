@@ -8,10 +8,10 @@ services:
     extends:
       file: services/homarr/docker-compose.yml
       service: homarr
-  taskmd:
+  tududi:
     extends:
-      file: services/taskmd/docker-compose.yml
-      service: taskmd
+      file: services/tududi/docker-compose.yml
+      service: tududi
   vaultwarden:
     extends:
       file: services/vaultwarden/docker-compose.yml
