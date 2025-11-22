@@ -1,0 +1,16 @@
+services:
+  trilium:
+    container_name: trilium
+    image: triliumnext/notes:latest
+    environment:
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./data:/home/node/trilium-data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.trilium.rule=Host(`trilium.${DOMAIN}`)"
+      - "traefik.http.services.trilium.loadbalancer.server.port=8080"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped

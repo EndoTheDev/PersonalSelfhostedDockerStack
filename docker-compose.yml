@@ -20,8 +20,12 @@ services:
     extends:
       file: services/searxng/docker-compose.yml
       service: searxng
+  trilium:
+    extends:
+      file: services/trilium/docker-compose.yml
+      service: trilium
 
-      
+       
 networks:
   frontend:
     external: true
