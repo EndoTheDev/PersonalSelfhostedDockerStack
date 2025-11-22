@@ -32,7 +32,6 @@ High-performance in-memory data structure store optimized for ARM64 Raspberry Pi
 
 ### Medium Priority
 - **OpenWebUI/Perplexica**: Chat history, API caching
-- **Homarr**: Widget data caching
 - **Jellyfin**: Metadata and thumbnail caching
 
 ## Usage Examples

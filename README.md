@@ -54,7 +54,6 @@ A comprehensive, production-ready self-hosted infrastructure stack built with Do
 
 ### Core Services
 - **Website**: Personal website/portfolio
-- **Homarr**: Modern dashboard for your services
 - **Tududi**: Advanced task and project management with areas, recurring tasks, and rich notes
 - **Vaultwarden**: Bitwarden-compatible password manager
 - **SearXNG**: Privacy-focused metasearch engine
@@ -98,9 +97,6 @@ Create a `.env` file with the following variables:
 # Cloudflared tunnel token
 TUNNEL_TOKEN=your_cloudflare_tunnel_token
 
-# Homarr encryption key (generate random 32-char hex)
-SECRET_ENCRYPTION_KEY=your_random_key
-
 # Traefik basic auth (generate with htpasswd)
 BASIC_AUTH=admin:$apr1$encrypted_password
 ```
@@ -122,7 +118,6 @@ Each service has its own configuration directory under `services/{service-name}/
 Services are typically accessible via Traefik routes. Default domain setup assumes `endothe.dev` - adjust accordingly.
 
 Common service URLs:
-- Homarr Dashboard: `https://homarr.endothe.dev`
 - Tududi: `https://tududi.endothe.dev`
 - Jellyfin: `https://jellyfin.endothe.dev`
 - Vaultwarden: `https://vaultwarden.endothe.dev`

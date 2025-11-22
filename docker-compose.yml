@@ -4,10 +4,6 @@ services:
     extends:
       file: services/website/docker-compose.yml
       service: website
-  homarr:
-    extends:
-      file: services/homarr/docker-compose.yml
-      service: homarr
   tududi:
     extends:
       file: services/tududi/docker-compose.yml
