@@ -20,8 +20,11 @@ services:
     extends:
       file: services/trilium/docker-compose.yml
       service: trilium
+  homarr:
+    extends:
+      file: services/homarr/docker-compose.yml
+      service: homarr
 
-       
 networks:
   frontend:
     external: true

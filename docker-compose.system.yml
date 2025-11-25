@@ -17,7 +17,6 @@ services:
       file: services/watchtower/docker-compose.yml
       service: watchtower
 
-
 networks:
   frontend:
     external: true

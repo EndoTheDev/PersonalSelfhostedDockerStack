@@ -8,6 +8,7 @@ services:
     extends:
       file: services/redis/docker-compose.yml
       service: redis
+      
 networks:
   frontend:
     external: true
