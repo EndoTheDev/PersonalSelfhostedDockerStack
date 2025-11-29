@@ -1,0 +1,31 @@
+services:
+  arcane:
+    container_name: arcane
+    image: ghcr.io/getarcaneapp/arcane:latest
+    environment:
+      - TZ=Asia/Bangkok
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://arcane.${DOMAIN}
+      - ENCRYPTION_KEY=${ARCANE_ENCRYPTION_KEY}
+      - JWT_SECRET=${ARCANE_JWT_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+      - /opt/docker:/opt/docker
+    ports:
+      - 3552:3552
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.${DOMAIN}`)"
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -12,6 +12,10 @@ services:
     extends:
       file: services/uptime-kuma/docker-compose.yml
       service: uptime-kuma
+  arcane:
+    extends:
+      file: services/arcane/docker-compose.yml
+      service: arcane
 
 networks:
   frontend:
