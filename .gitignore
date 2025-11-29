@@ -1,4 +1,4 @@
-/services/website
+services/website
 
 # Environment and secrets
 .env
