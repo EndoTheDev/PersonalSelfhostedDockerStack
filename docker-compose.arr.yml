@@ -55,7 +55,5 @@ services:
         condition: service_healthy
 
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

@@ -13,6 +13,5 @@ services:
       - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.dashboard.service=api@internal"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped

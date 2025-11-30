@@ -1,13 +1,13 @@
 name: services
 services:
+  homarr:
+    extends:
+      file: services/homarr/docker-compose.yml
+      service: homarr
   website:
     extends:
       file: services/website/docker-compose.yml
       service: website
-  tududi:
-    extends:
-      file: services/tududi/docker-compose.yml
-      service: tududi
   vaultwarden:
     extends:
       file: services/vaultwarden/docker-compose.yml
@@ -20,13 +20,11 @@ services:
     extends:
       file: services/trilium/docker-compose.yml
       service: trilium
-  homarr:
+  tududi:
     extends:
-      file: services/homarr/docker-compose.yml
-      service: homarr
+      file: services/tududi/docker-compose.yml
+      service: tududi
 
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

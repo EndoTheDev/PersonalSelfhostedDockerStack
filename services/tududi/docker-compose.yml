@@ -13,12 +13,5 @@ services:
       - "traefik.http.routers.tududi.rule=Host(`tududi.${DOMAIN}`)"
       - "traefik.http.services.tududi.loadbalancer.server.port=3002"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

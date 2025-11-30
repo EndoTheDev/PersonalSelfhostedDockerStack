@@ -10,7 +10,5 @@ services:
       service: redis
       
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

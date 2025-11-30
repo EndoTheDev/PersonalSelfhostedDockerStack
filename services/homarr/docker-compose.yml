@@ -2,6 +2,7 @@ services:
   homarr:
     container_name: homarr
     image: ghcr.io/homarr-labs/homarr:latest
+    env_file: /home/endo/Docker/.env
     environment:
       - TZ=Asia/Bangkok
     volumes:
@@ -14,12 +15,5 @@ services:
       - "traefik.http.routers.homarr.rule=Host(`homarr.${DOMAIN}`)"
       - "traefik.http.services.homarr.loadbalancer.server.port=7575"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

@@ -8,12 +8,5 @@ services:
     volumes:
       - ./config:/etc/cloudflared
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

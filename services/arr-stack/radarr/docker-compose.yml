@@ -15,8 +15,7 @@ services:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${DOMAIN}`)"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7878/health || exit 1"]
@@ -24,9 +23,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

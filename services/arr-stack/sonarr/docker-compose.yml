@@ -15,8 +15,7 @@ services:
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${DOMAIN}`)"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8989/health || exit 1"]
@@ -24,9 +23,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

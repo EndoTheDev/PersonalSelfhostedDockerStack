@@ -18,12 +18,5 @@ services:
       - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Host=n8n.${DOMAIN}"
       - "traefik.http.routers.n8n.middlewares=n8n-headers"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

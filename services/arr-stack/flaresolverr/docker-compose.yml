@@ -14,8 +14,7 @@ services:
       - "traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.${DOMAIN}`)"
       - "traefik.http.services.flaresolverr.loadbalancer.server.port=8191"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8191/health || exit 1"]
@@ -23,9 +22,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

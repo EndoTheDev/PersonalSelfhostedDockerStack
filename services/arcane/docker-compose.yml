@@ -20,12 +20,5 @@ services:
       - "traefik.http.routers.arcane.rule=Host(`arcane.${DOMAIN}`)"
       - "traefik.http.services.arcane.loadbalancer.server.port=3552"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

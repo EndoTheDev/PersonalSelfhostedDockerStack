@@ -12,13 +12,7 @@ services:
     extends:
       file: services/pihole/docker-compose.yml
       service: pihole
-  watchtower:
-    extends:
-      file: services/watchtower/docker-compose.yml
-      service: watchtower
 
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

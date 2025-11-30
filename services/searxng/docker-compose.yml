@@ -15,12 +15,5 @@ services:
       - "traefik.http.routers.searxng.rule=Host(`searxng.${DOMAIN}`)"
       - "traefik.http.services.searxng.loadbalancer.server.port=8080"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

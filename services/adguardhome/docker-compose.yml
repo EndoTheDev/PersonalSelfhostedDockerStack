@@ -14,12 +14,5 @@ services:
       - "traefik.http.routers.adguardhome.rule=Host(`adguard.${DOMAIN}`)"
       - "traefik.http.services.adguardhome.loadbalancer.server.port=3000" # Traefik forwards to internal port 80
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

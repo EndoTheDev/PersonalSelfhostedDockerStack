@@ -13,12 +13,5 @@ services:
       - "traefik.http.routers.openwebui.rule=Host(`open-webui.${DOMAIN}`)"
       - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

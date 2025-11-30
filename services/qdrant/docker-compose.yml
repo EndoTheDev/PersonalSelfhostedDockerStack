@@ -11,12 +11,5 @@ services:
       - "traefik.http.routers.qdrant.rule=Host(`qdrant.${DOMAIN}`)"
       - "traefik.http.services.qdrant.loadbalancer.server.port=6333"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true

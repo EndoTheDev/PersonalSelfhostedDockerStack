@@ -11,6 +11,5 @@ services:
       - "traefik.http.routers.trilium.rule=Host(`trilium.${DOMAIN}`)"
       - "traefik.http.services.trilium.loadbalancer.server.port=8080"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped

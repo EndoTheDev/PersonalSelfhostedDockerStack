@@ -1,5 +1,9 @@
 name: monitoring
 services:
+  arcane:
+    extends:
+      file: services/arcane/docker-compose.yml
+      service: arcane
   dozzle:
     extends:
       file: services/dozzle/docker-compose.yml
@@ -12,13 +16,7 @@ services:
     extends:
       file: services/uptime-kuma/docker-compose.yml
       service: uptime-kuma
-  arcane:
-    extends:
-      file: services/arcane/docker-compose.yml
-      service: arcane
 
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

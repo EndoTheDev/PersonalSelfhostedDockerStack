@@ -10,7 +10,5 @@ services:
       service: n8n
 
 networks:
-  frontend:
-    external: true
-  backend:
+  services:
     external: true

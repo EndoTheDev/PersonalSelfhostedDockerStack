@@ -12,12 +12,5 @@ services:
       - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.${DOMAIN}`)"
       - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
     networks:
-      - frontend
-      - backend
+      - services
     restart: unless-stopped
-
-networks:
-  frontend:
-    external: true
-  backend:
-    external: true
