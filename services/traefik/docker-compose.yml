@@ -1,7 +1,7 @@
 services:
   traefik:
     container_name: traefik
-    image: traefik:v3.3
+    image: traefik:latest
     security_opt:
       - no-new-privileges:true
     volumes:
