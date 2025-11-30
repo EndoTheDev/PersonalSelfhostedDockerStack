@@ -1,208 +1,133 @@
-# Self-Hosted Services Stack
+# Endo's Docker Services Stack
 
-A comprehensive, production-ready self-hosted infrastructure stack built with Docker Compose, featuring media management, AI tools, monitoring, and essential services for a complete home server setup.
+## Description
+
+A comprehensive self-hosted services stack designed for Raspberry Pi 4 deployment, providing media management, productivity tools, monitoring, and secure remote access through a modular Docker Compose setup.
 
 ## Features
 
-- **Media Ecosystem**: Complete media server with Jellyfin, automated downloading via qBittorrent and the ARR suite (Sonarr, Radarr, Lidarr, Bazarr)
-- **AI & Automation**: OpenWebUI for AI chat interfaces and n8n for workflow automation
-- **Security & Infrastructure**: Vaultwarden password manager, Pi-hole ad blocking, Traefik reverse proxy, and Cloudflare tunnel
-- **Monitoring**: Uptime Kuma for service monitoring and Dozzle for container log viewing
-- **Databases**: Redis caching and Qdrant vector database for AI applications
-- **Modular Architecture**: Services organized in logical stacks with shared networking
+- **Media Management**: Jellyfin media server with automated downloading via ARR stack (Radarr, Sonarr, Lidarr, Bazarr, Prowlarr)
+- **Dashboard**: Homarr for organizing and accessing services
+- **AI Integration**: OpenWebUI for AI chat interfaces
+- **Productivity**: N8N workflow automation, Tududi task management, Trilium note-taking
+- **Security**: Vaultwarden password manager, AdGuard Home and Pi-hole ad blockers
+- **Monitoring**: Uptime Kuma and Dozzle for system monitoring and logs
+- **Search**: SearXNG privacy-focused metasearch engine
+- **Torrenting**: qBittorrent client
+- **Reverse Proxy**: Traefik with automatic SSL via Cloudflared tunnel
+- **Databases**: Redis for caching, Qdrant for vector search
 
 ## Prerequisites
 
-- Docker Engine 20.10+
-- Docker Compose v2.0+
-- At least 4GB RAM (8GB+ recommended)
-- Linux/macOS/Windows with Docker support
+- Raspberry Pi 4 (or similar ARM64 device)
+- Docker and Docker Compose installed
+- Domain name with Cloudflare DNS
+- External storage for media files (e.g., mounted HDD)
 
-## Quick Start
+## Installation
 
-1. **Clone the repository**
+1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd docker-services-stack
    ```
 
-2. **Configure environment**
+2. Copy the environment file:
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
    ```
 
-3. **Create external networks**
+3. Configure your `.env` file with your domain, Cloudflare tunnel token, and other required variables.
+
+4. Create the Docker network:
    ```bash
-   docker network create frontend
-   docker network create backend
+   docker network create services
    ```
 
-4. **Start services**
+5. Start the core infrastructure:
    ```bash
-   # Start all services
-   docker-compose -f docker-compose.yml -f docker-compose.arr.yml -f docker-compose.databases.yml -f docker-compose.monitor.yml -f docker-compose.system.yml -f docker-compose.ai.yml up -d
+   docker-compose -f docker-compose.system.yml up -d
+   ```
 
-   # Or start individual stacks
-   docker-compose -f docker-compose.system.yml up -d  # Infrastructure first
+6. Start additional service groups as needed:
+   ```bash
    docker-compose -f docker-compose.databases.yml up -d
    docker-compose -f docker-compose.arr.yml up -d
-   # etc.
+   docker-compose -f docker-compose.ai.yml up -d
+   docker-compose -f docker-compose.monitor.yml up -d
    ```
 
-## Service Categories
-
-### Core Services
-- **Website**: Personal website/portfolio
-- **Tududi**: Advanced task and project management with areas, recurring tasks, and rich notes
-- **Vaultwarden**: Bitwarden-compatible password manager
-- **SearXNG**: Privacy-focused metasearch engine
-
-### Media Stack (ARR Suite)
-- **qBittorrent**: Torrent client with web UI
-- **Flaresolverr**: Anti-captcha service for indexers
-- **Prowlarr**: Indexer manager for Sonarr/Radarr
-- **Sonarr**: TV show automation and management
-- **Radarr**: Movie automation and management
-- **Lidarr**: Music automation and management
-- **Bazarr**: Subtitle management and downloading
-- **Jellyfin**: Media server with transcoding
-
-### AI Services
-- **OpenWebUI**: Web interface for AI models with vector search capabilities
-- **n8n**: Workflow automation and integration platform
-
-### Databases
-- **Redis**: High-performance caching and data store
-- **Qdrant**: Vector database for AI embeddings and similarity search
-
-### Monitoring
-- **Uptime Kuma**: Multi-protocol uptime monitoring
-- **Dozzle**: Real-time container log viewer
-- **Whoami**: Simple service for testing connectivity
-
-### System Infrastructure
-- **Traefik**: Modern reverse proxy and load balancer
-- **Cloudflared**: Secure tunnel to Cloudflare edge
-- **Pi-hole**: Network-wide ad blocking via DNS
-- **Watchtower**: Automatic container updates
+7. Start the main services:
+   ```bash
+   docker-compose up -d
+   ```
 
 ## Configuration
 
 ### Environment Variables
 
-Create a `.env` file with the following variables:
+Key variables in `.env`:
 
-```bash
-# Cloudflared tunnel token
-TUNNEL_TOKEN=your_cloudflare_tunnel_token
+- `DOMAIN`: Your root domain (e.g., example.com)
+- `TUNNEL_TOKEN`: Cloudflare tunnel token from Zero Trust dashboard
+- `BASIC_AUTH`: Traefik dashboard authentication (generate with htpasswd)
+- Service-specific variables for Tududi, Pi-hole, Redis, etc.
 
-# Traefik basic auth (generate with htpasswd)
-BASIC_AUTH=admin:$apr1$encrypted_password
-```
+### Volumes
 
-### Networks
-
-The stack uses two external Docker networks:
-- `frontend`: Public-facing services accessible from outside
-- `backend`: Internal services for inter-container communication
-
-### Service Configuration
-
-Each service has its own configuration directory under `services/{service-name}/config/`. Refer to individual service documentation for detailed setup.
+- Media files: Mount external storage to `/mnt/hdd/media`
+- Downloads: `/mnt/hdd/downloads`
+- Configs: Stored in each service's `./config` directory
 
 ## Usage
 
-### Accessing Services
+Access services via:
+- Local network: `http://service-name.local` (configure DNS accordingly)
+- Remote: `https://service-name.yourdomain.com` (via Cloudflared tunnel)
 
-Services are typically accessible via Traefik routes. Default domain setup assumes `endothe.dev` - adjust accordingly.
+### Service URLs
 
-Common service URLs:
-- Tududi: `https://tududi.endothe.dev`
-- Jellyfin: `https://jellyfin.endothe.dev`
-- Vaultwarden: `https://vaultwarden.endothe.dev`
-- OpenWebUI: `https://open-webui.endothe.dev`
-- Traefik Dashboard: `https://traefik.endothe.dev`
+- Homarr Dashboard: `https://homarr.yourdomain.com`
+- Jellyfin: `https://jellyfin.yourdomain.com`
+- Radarr: `https://radarr.yourdomain.com`
+- Sonarr: `https://sonarr.yourdomain.com`
+- Lidarr: `https://lidarr.yourdomain.com`
+- Bazarr: `https://bazarr.yourdomain.com`
+- Prowlarr: `https://prowlarr.yourdomain.com`
+- qBittorrent: `https://qbittorrent.yourdomain.com`
+- OpenWebUI: `https://openwebui.yourdomain.com`
+- SearXNG: `https://searxng.yourdomain.com`
+- N8N: `https://n8n.yourdomain.com`
+- Tududi: `https://tududi.yourdomain.com`
+- Vaultwarden: `https://vaultwarden.yourdomain.com`
+- AdGuard Home: `https://adguard.yourdomain.com`
+- Pi-hole: `https://pihole.yourdomain.com`
+- Dozzle: `https://dozzle.yourdomain.com`
+- Uptime Kuma: `https://uptime.yourdomain.com`
+- Trilium: `https://trilium.yourdomain.com`
 
-### Common Commands
+## Services Overview
 
-```bash
-# View service status
-docker-compose -f docker-compose.yml ps
-
-# View logs
-docker-compose -f docker-compose.arr.yml logs -f jellyfin
-
-# Restart a service
-docker-compose -f docker-compose.system.yml restart traefik
-
-# Update all containers
-docker-compose -f docker-compose.system.yml up -d watchtower
-
-# Stop all services
-docker-compose -f docker-compose.yml -f docker-compose.arr.yml -f docker-compose.databases.yml -f docker-compose.monitor.yml -f docker-compose.system.yml -f docker-compose.ai.yml down
-```
-
-### Backup Strategy
-
-- Database backups: Configure automated backups for Redis, Qdrant, and service databases
-- Media libraries: Regular backups of `/data/media` directories
-- Configuration: Backup `services/*/config/` directories
-- Environment: Secure backup of `.env` file
-
-## Development
-
-### Project Structure
-
-```
-.
-├── docker-compose.yml              # Core services
-├── docker-compose.arr.yml          # Media stack
-├── docker-compose.databases.yml     # Database services
-├── docker-compose.monitor.yml       # Monitoring stack
-├── docker-compose.system.yml        # Infrastructure
-├── docker-compose.ai.yml           # AI services
-├── services/                       # Individual service configs
-│   ├── jellyfin/
-│   ├── traefik/
-│   └── ...
-├── .env                            # Environment variables
-└── README.md
-```
-
-### Adding New Services
-
-1. Create service directory: `services/new-service/`
-2. Add `docker-compose.yml` with service definition
-3. Extend from main compose files if needed
-4. Update appropriate stack file (e.g., `docker-compose.system.yml`)
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed service inventory and architecture diagram.
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-service`
-3. Make changes and test thoroughly
-4. Update documentation as needed
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
 5. Submit a pull request
 
-### Guidelines
-
-- Follow Docker Compose best practices
-- Include health checks for critical services
-- Document any new environment variables
-- Test service dependencies and startup order
-- Ensure services work with external networks
+Please update ARCHITECTURE.md when adding/removing services.
 
 ## License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+Copyright (c) 2024 EndoTheDev
 
-- Check service-specific documentation in `services/*/README.md`
-- Review Docker Compose logs for troubleshooting
-- Ensure proper network connectivity and DNS resolution
+## Acknowledgments
 
----
-
-**Note**: This stack is designed for personal use. Review security implications before exposing services to the internet. Always keep services updated and monitor for security vulnerabilities.
+- Thanks to all the open-source projects that make this stack possible
+- LinuxServer.io for container images
+- Cloudflare for tunneling solutions
