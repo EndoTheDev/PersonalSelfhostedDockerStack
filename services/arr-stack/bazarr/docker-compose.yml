@@ -8,8 +8,8 @@ services:
       - TZ=Asia/Bangkok
     volumes:
       - ./data:/config
-      - /mnt/hdd/media/movies:/movies
-      - /mnt/hdd/media/tvshows:/tv
+      - ${STORAGE_PATH}media/movies:/movies
+      - ${STORAGE_PATH}media/tvshows:/tv
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bazarr.rule=Host(`bazarr.${DOMAIN}`)"

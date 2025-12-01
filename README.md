@@ -75,8 +75,8 @@ Key variables in `.env`:
 
 ### Volumes
 
-- Media files: Mount external storage to `/mnt/hdd/media`
-- Downloads: `/mnt/hdd/downloads`
+- Media files: Mount external storage to `${STORAGE_PATH}media`
+- Downloads: `${STORAGE_PATH}downloads`
 - Configs: Stored in each service's `./config` directory
 
 ## Usage

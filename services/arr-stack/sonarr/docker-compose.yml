@@ -8,8 +8,8 @@ services:
       - TZ=Asia/Bangkok
     volumes:
       - ./data:/config
-      - /mnt/hdd/media/tvshows:/tv
-      - /mnt/hdd/downloads:/downloads
+      - ${STORAGE_PATH}media/tvshows:/tv
+      - ${STORAGE_PATH}downloads:/downloads
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${DOMAIN}`)"

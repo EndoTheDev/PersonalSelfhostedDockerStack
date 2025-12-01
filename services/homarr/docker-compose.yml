@@ -2,9 +2,9 @@ services:
   homarr:
     container_name: homarr
     image: ghcr.io/homarr-labs/homarr:latest
-    env_file: /home/endo/Docker/.env
     environment:
       - TZ=Asia/Bangkok
+      - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_KEY}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config:/appdata

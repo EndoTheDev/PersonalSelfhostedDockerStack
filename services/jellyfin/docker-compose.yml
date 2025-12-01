@@ -9,9 +9,9 @@ services:
       # - JELLYFIN_PublishedServerUrl=http://jellyfin
     volumes:
       - ./config:/config
-      - /mnt/hdd/media/tvshows:/data/tvshows
-      - /mnt/hdd/media/movies:/data/movies
-      - /mnt/hdd/media/music:/data/music
+      - ${STORAGE_PATH}media/tvshows:/data/tvshows
+      - ${STORAGE_PATH}media/movies:/data/movies
+      - ${STORAGE_PATH}media/music:/data/music
     ports:
       - 8096:8096
       - 8920:8920

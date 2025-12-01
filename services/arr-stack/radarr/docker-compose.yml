@@ -8,8 +8,8 @@ services:
       - TZ=Asia/Bangkok
     volumes:
       - ./data:/config
-      - /mnt/hdd/media/movies:/movies
-      - /mnt/hdd/downloads:/downloads
+      - ${STORAGE_PATH}media/movies:/movies
+      - ${STORAGE_PATH}downloads:/downloads
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`radarr.${DOMAIN}`)"
