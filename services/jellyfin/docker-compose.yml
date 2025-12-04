@@ -5,7 +5,7 @@ services:
     environment:
       - PUID=1001
       - PGID=1001
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
       # - JELLYFIN_PublishedServerUrl=http://jellyfin
     volumes:
       - ./config:/config

@@ -5,7 +5,7 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - /usr/share/zoneinfo/Asia/Bangkok:/etc/localtime:ro
+      - /usr/share/zoneinfo/${TIMEZONE}:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config:/etc/traefik
     labels:

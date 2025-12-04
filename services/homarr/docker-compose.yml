@@ -3,7 +3,7 @@ services:
     container_name: homarr
     image: ghcr.io/homarr-labs/homarr:latest
     environment:
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
       - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_KEY}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -2,11 +2,11 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
-    ports: # <--- ADD THIS SECTION 
-      - "53:53/tcp" 
-      - "53:53/udp"
+    # ports: # <--- ADD THIS SECTION 
+    #   - "53:53/tcp" 
+    #   - "53:53/udp"
     environment:
-      TZ: 'Asia/Bangkok'
+      TZ: '${TIMEZONE}'
       FTLCONF_webserver_api_password: '${PIHOLE_API_PASSWORD}'
       FTLCONF_dns_listeningMode: 'all' # Important for Docker networking
     volumes:
@@ -29,7 +29,7 @@ services:
       # Pi-hole container will listen on 53/tcp, 53/udp, 80/tcp internally.
       # Traefik handles port 80 exposure. Tailscale handles port 53 exposure.
     networks:
-      frontend: # For Traefik to reach the WebUI
-        ipv4_address: 172.18.0.5  # Use current IP or choose unused
+      - services # For Traefik to reach the WebUI
+        # ipv4_address: 172.18.0.5  # Use current IP or choose unused
         
     restart: unless-stopped

@@ -4,7 +4,7 @@ services:
     image: vaultwarden/server:latest
     environment:
       - DOMAIN=https://vaultwarden.${DOMAIN}
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
     volumes:
       - ./data:/data
     labels:

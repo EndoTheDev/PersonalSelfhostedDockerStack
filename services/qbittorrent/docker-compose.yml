@@ -5,7 +5,7 @@ services:
     environment:
       - PUID=1001
       - PGID=1001
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
       - WEBUI_ADDRESS=0.0.0.0 
       - WEBUI_PORT=8080
       - WEBUI_CSRF_PROTECTION_ENABLED=false

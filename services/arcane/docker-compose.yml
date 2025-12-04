@@ -3,7 +3,7 @@ services:
     container_name: arcane
     image: ghcr.io/getarcaneapp/arcane:latest
     environment:
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
       - PUID=1000
       - PGID=1000
       - APP_URL=https://arcane.${DOMAIN}

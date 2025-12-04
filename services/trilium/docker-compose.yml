@@ -3,7 +3,7 @@ services:
     container_name: trilium
     image: triliumnext/notes:latest
     environment:
-      - TZ=Asia/Bangkok
+      - TZ=${TIMEZONE}
     volumes:
       - ./data:/home/node/trilium-data
     labels:
