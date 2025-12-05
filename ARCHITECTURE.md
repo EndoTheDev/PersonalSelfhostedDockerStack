@@ -53,6 +53,7 @@ graph TD
                 Dozzle[Dozzle<br/>Log Viewer]
                 UptimeKuma[Uptime Kuma<br/>Monitoring]
                 Trilium[Trilium<br/>Note Taking]
+                Filebrowser[Filebrowser<br/>File Manager]
                 Arcane[Arcane<br/>Unknown]
             end
 
@@ -133,6 +134,7 @@ This section provides a comprehensive list of all deployed services with brief d
 - **Dozzle**: Real-time Docker container log viewer.
 - **Uptime Kuma**: Self-hosted uptime monitoring and alerting.
 - **Trilium**: Hierarchical note-taking application.
+- **Filebrowser**: Web-based file manager for browsing and managing files on shared storage.
 - **Arcane**: Custom or specialized service (purpose TBD).
 
 ### Databases

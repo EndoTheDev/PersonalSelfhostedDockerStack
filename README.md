@@ -12,6 +12,7 @@ A comprehensive self-hosted services stack designed for Raspberry Pi 4 deploymen
 - **Productivity**: N8N workflow automation, Tududi task management, Trilium note-taking
 - **Security**: Vaultwarden password manager, AdGuard Home and Pi-hole ad blockers
 - **Monitoring**: Uptime Kuma and Dozzle for system monitoring and logs
+- **File Management**: Filebrowser for web-based file management
 - **Search**: SearXNG privacy-focused metasearch engine
 - **Torrenting**: qBittorrent client
 - **Reverse Proxy**: Traefik with automatic SSL via Cloudflared tunnel
@@ -105,6 +106,7 @@ Access services via:
 - Dozzle: `https://dozzle.yourdomain.com`
 - Uptime Kuma: `https://uptime.yourdomain.com`
 - Trilium: `https://trilium.yourdomain.com`
+- Filebrowser: `https://filebrowser.yourdomain.com`
 
 ## Services Overview
 

@@ -24,6 +24,10 @@ services:
     extends:
       file: services/tududi/docker-compose.yml
       service: tududi
+  filebrowser:
+    extends:
+      file: services/filebrowser/docker-compose.yml
+      service: filebrowser
 
 networks:
   services:
