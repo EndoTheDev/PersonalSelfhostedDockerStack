@@ -1,0 +1,18 @@
+services:
+  pairdrop:
+    container_name: pairdrop
+    image: linuxserver/pairdrop:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TIMEZONE}
+      - WS_FALLBACK=false
+      - RATE_LIMIT=false
+      - DEBUG_MODE=false
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pairdrop.rule=Host(`pairdrop.${DOMAIN}`)"
+      - "traefik.http.services.pairdrop.loadbalancer.server.port=3000"
+    networks:
+      - services
+    restart: unless-stopped

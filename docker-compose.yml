@@ -28,7 +28,11 @@ services:
     extends:
       file: services/filebrowser/docker-compose.yml
       service: filebrowser
-
+  pairdrop:
+    extends:
+      file: services/pairdrop/docker-compose.yml
+      service: pairdrop
+      
 networks:
   services:
     external: true
