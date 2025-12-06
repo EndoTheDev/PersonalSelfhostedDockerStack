@@ -5,6 +5,7 @@ services:
     environment:
       - TZ=${TIMEZONE}
       - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_KEY}
+      - REDIS_URL=${REDIS_URL}/${REDIS_DB_HOMARR}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config:/appdata
