@@ -15,3 +15,5 @@ services:
     networks:
       - services
     restart: unless-stopped
+    healthcheck:
+      disable: true
