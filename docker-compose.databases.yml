@@ -1,13 +1,13 @@
 name: databases
 services:
-  qdrant:
-    extends:
-      file: services/databases/qdrant/docker-compose.yml
-      service: qdrant
   redis:
     extends:
       file: services/databases/redis/docker-compose.yml
       service: redis
+  qdrant:
+    extends:
+      file: services/databases/qdrant/docker-compose.yml
+      service: qdrant
 
 networks:
   services:
