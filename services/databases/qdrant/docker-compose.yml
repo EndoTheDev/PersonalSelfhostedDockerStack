@@ -1,7 +1,10 @@
 services:
   qdrant:
     container_name: qdrant
-    image: qdrant/qdrant:latest
+    build:
+      dockerfile_inline: |
+        FROM qdrant/qdrant:latest
+        RUN apt-get update && apt-get install -y curl
     volumes:
       - ./data:/qdrant/storage
     ports:
@@ -9,3 +12,11 @@ services:
     networks:
       - services
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6333/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+
