@@ -13,8 +13,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
       - /opt/docker:/opt/docker
-    ports:
-      - 3552:3552
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.arcane.rule=Host(`arcane.${DOMAIN}`)"
