@@ -32,7 +32,11 @@ services:
     extends:
       file: services/pairdrop/docker-compose.yml
       service: pairdrop
-      
+  docling:
+    extends:
+      file: services/docling/docker-compose.yml
+      service: docling
+
 networks:
   services:
     external: true

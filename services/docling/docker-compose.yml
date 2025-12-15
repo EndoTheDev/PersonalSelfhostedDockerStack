@@ -1,0 +1,13 @@
+services:
+  docling:
+    container_name: docling
+    image: ghcr.io/docling-project/docling-serve:latest
+    environment:
+      - DOCLING_SERVE_ENABLE_UI=true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.docling.rule=Host(`docling.${DOMAIN}`)"
+      - "traefik.http.services.docling.loadbalancer.server.port=5001"
+    networks:
+      - services
+    restart: unless-stopped
