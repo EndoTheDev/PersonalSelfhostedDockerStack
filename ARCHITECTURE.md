@@ -32,6 +32,7 @@ graph TD
                 Tududi[Tududi<br/>Task Management]
                 Vaultwarden[Vaultwarden<br/>Password Manager]
                 Whoami[Whoami<br/>Test Service]
+                PocketID[Pocket ID<br/>OIDC Provider]
             end
 
             subgraph Media["Media Services"]
@@ -119,6 +120,7 @@ This section provides a comprehensive list of all deployed services with brief d
 - **Tududi**: Task and project management application.
 - **Vaultwarden**: Lightweight password manager compatible with Bitwarden.
 - **Whoami**: Simple test service for verifying configurations.
+- **Pocket ID**: OIDC provider for passkey-based authentication.
 
 ### Media Services
 

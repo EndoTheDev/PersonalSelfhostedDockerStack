@@ -1,0 +1,18 @@
+services:
+  pocket-id:
+    container_name: pocket-id
+    image: ghcr.io/pocket-id/pocket-id
+    environment:
+      - APP_URL=https://pocket-id.${DOMAIN}
+      - TRUST_PROXY=true
+      - ALLOW_SIGNUP=true
+      - ADMIN_EMAIL=endothedev@gmail.com
+    volumes:
+      - ./data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pocket-id.rule=Host(`pocket-id.${DOMAIN}`)"
+      - "traefik.http.services.pocket-id.loadbalancer.server.port=1411"
+    networks:
+      - services
+    restart: unless-stopped
