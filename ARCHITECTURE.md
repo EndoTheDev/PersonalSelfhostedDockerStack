@@ -54,6 +54,7 @@ graph TD
                 UptimeKuma[Uptime Kuma<br/>Monitoring]
                 Trilium[Trilium<br/>Note Taking]
                 Filebrowser[Filebrowser<br/>File Manager]
+                it-tools[it-tools<br/>Developer Tools]
                 Arcane[Arcane<br/>Unknown]
             end
 
@@ -105,10 +106,12 @@ graph TD
 This section provides a comprehensive list of all deployed services with brief descriptions:
 
 ### Core Infrastructure
+
 - **Traefik**: Reverse proxy and load balancer for routing traffic to services.
 - **Cloudflared**: Cloudflare tunnel service for secure external access.
 
 ### Web Applications
+
 - **Homarr**: Dashboard for organizing and accessing self-hosted services.
 - **OpenWebUI**: Web interface for interacting with AI models (integrates with Redis).
 - **SearXNG**: Privacy-focused metasearch engine (integrates with Redis).
@@ -118,6 +121,7 @@ This section provides a comprehensive list of all deployed services with brief d
 - **Whoami**: Simple test service for verifying configurations.
 
 ### Media Services
+
 - **Jellyfin**: Media server for streaming movies, TV shows, and music.
 - **ARR Stack**:
   - **Radarr**: Automated movie download and management.
@@ -128,6 +132,7 @@ This section provides a comprehensive list of all deployed services with brief d
   - **Flaresolverr**: Anti-bot service for accessing protected sites.
 
 ### Tools & Utilities
+
 - **qBittorrent**: Torrent client for downloading files.
 - **AdGuard Home**: Network-wide ad and tracker blocker.
 - **Pi-hole**: DNS-based ad blocker and network monitoring.
@@ -135,9 +140,11 @@ This section provides a comprehensive list of all deployed services with brief d
 - **Uptime Kuma**: Self-hosted uptime monitoring and alerting.
 - **Trilium**: Hierarchical note-taking application.
 - **Filebrowser**: Web-based file manager for browsing and managing files on shared storage.
+- **it-tools**: Collection of online developer tools for formatting, conversion, and testing.
 - **Arcane**: Custom or specialized service (purpose TBD).
 
 ### Databases
+
 - **Redis**: In-memory data structure store used for caching and sessions.
 - **Qdrant**: Vector database for similarity search and AI applications.
 

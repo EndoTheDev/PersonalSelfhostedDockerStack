@@ -40,6 +40,10 @@ services:
     extends:
       file: services/excalidraw/docker-compose.yml
       service: excalidraw
+  it-tools:
+    extends:
+      file: services/it-tools/docker-compose.yml
+      service: it-tools
 
 networks:
   services:

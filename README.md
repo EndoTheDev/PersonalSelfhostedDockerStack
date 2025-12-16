@@ -28,12 +28,14 @@ A comprehensive self-hosted services stack designed for Raspberry Pi 4 deploymen
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd docker-services-stack
    ```
 
 2. Copy the environment file:
+
    ```bash
    cp .env.example .env
    ```
@@ -41,16 +43,19 @@ A comprehensive self-hosted services stack designed for Raspberry Pi 4 deploymen
 3. Configure your `.env` file with your domain, Cloudflare tunnel token, and other required variables.
 
 4. Create the Docker network:
+
    ```bash
    docker network create services
    ```
 
 5. Start the core infrastructure:
+
    ```bash
    docker-compose -f docker-compose.system.yml up -d
    ```
 
 6. Start additional service groups as needed:
+
    ```bash
    docker-compose -f docker-compose.databases.yml up -d
    docker-compose -f docker-compose.arr.yml up -d
@@ -83,12 +88,14 @@ Key variables in `.env`:
 ## Usage
 
 Access services via:
+
 - Local network: `http://service-name.local` (configure DNS accordingly)
 - Remote: `https://service-name.yourdomain.com` (via Cloudflared tunnel)
 
 ### Service URLs
 
 - Homarr Dashboard: `https://homarr.yourdomain.com`
+- it-tools: `https://it-tools.yourdomain.com`
 - Jellyfin: `https://jellyfin.yourdomain.com`
 - Radarr: `https://radarr.yourdomain.com`
 - Sonarr: `https://sonarr.yourdomain.com`
