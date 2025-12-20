@@ -8,14 +8,14 @@ services:
     extends:
       file: services/dozzle/docker-compose.yml
       service: dozzle
-  whoami:
-    extends:
-      file: services/whoami/docker-compose.yml
-      service: whoami
   uptime-kuma:
     extends:
       file: services/uptime-kuma/docker-compose.yml
       service: uptime-kuma
+  whoami:
+    extends:
+      file: services/whoami/docker-compose.yml
+      service: whoami
 
 networks:
   services:

@@ -6,6 +6,7 @@ services/website
 .env.*.local
 .env.production
 .env.staging
+*.generated.yaml
 
 # Data directories (persistent storage)
 **/data/

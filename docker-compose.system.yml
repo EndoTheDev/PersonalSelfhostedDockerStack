@@ -8,6 +8,10 @@ services:
     extends:
       file: services/traefik/docker-compose.yml
       service: traefik
+  traefik-forward-auth:
+    extends:
+      file: services/traefik-forward-auth/docker-compose.yml
+      service: traefik-forward-auth
   pihole:
     extends:
       file: services/pihole/docker-compose.yml

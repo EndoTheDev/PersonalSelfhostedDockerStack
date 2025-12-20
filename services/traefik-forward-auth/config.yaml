@@ -1,0 +1,13 @@
+server:
+  hostname: "auth.${DOMAIN}"
+
+cookies:
+  domain: "${DOMAIN}"
+
+portals:
+  - name: "main"
+    providers:
+      - pocketID:
+          endpoint: "https://pocket-id.${DOMAIN}"
+          clientID: "${POCKETID_ID}"
+          clientSecret: "${POCKETID_SECRET}"
