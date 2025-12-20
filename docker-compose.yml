@@ -1,9 +1,5 @@
 name: services
 services:
-  pocket-id:
-    extends:
-      file: services/pocket-id/docker-compose.yml
-      service: pocket-id
   homarr:
     extends:
       file: services/homarr/docker-compose.yml
