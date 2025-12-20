@@ -7,7 +7,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.rule=Host(`dozzle.${DOMAIN}`)"
-      - "traefik.http.routers.dozzle.middlewares=pocket-id-auth@file"
+      - "traefik.http.routers.dozzle.middlewares=auth@file"
       - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
     networks:
       - services
