@@ -6,7 +6,7 @@ services:
       service: homarr
   website:
     extends:
-      file: services/website/docker-compose.yml
+      file: development/website/docker-compose.yml
       service: website
   vaultwarden:
     extends:
