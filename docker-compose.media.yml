@@ -2,53 +2,53 @@ name: media-services
 services:
   qbittorrent:
     extends:
-      file: services/qbittorrent/docker-compose.yml
+      file: services/media-services/qbittorrent/docker-compose.yml
       service: qbittorrent
   flaresolverr:
     extends:
-      file: services/arr-stack/flaresolverr/docker-compose.yml
+      file: services/media-services/flaresolverr/docker-compose.yml
       service: flaresolverr
     depends_on:
-      qbittorrent: 
+      qbittorrent:
         condition: service_healthy
   prowlarr:
     extends:
-      file: services/arr-stack/prowlarr/docker-compose.yml
+      file: services/media-services/prowlarr/docker-compose.yml
       service: prowlarr
     depends_on:
       flaresolverr:
         condition: service_healthy
   sonarr:
     extends:
-      file: services/arr-stack/sonarr/docker-compose.yml
+      file: services/media-services/sonarr/docker-compose.yml
       service: sonarr
     depends_on:
       prowlarr:
         condition: service_healthy
   radarr:
     extends:
-      file: services/arr-stack/radarr/docker-compose.yml
+      file: services/media-services/radarr/docker-compose.yml
       service: radarr
     depends_on:
       sonarr:
         condition: service_healthy
   lidarr:
     extends:
-      file: services/arr-stack/lidarr/docker-compose.yml
+      file: services/media-services/lidarr/docker-compose.yml
       service: lidarr
     depends_on:
       radarr:
         condition: service_healthy
   bazarr:
     extends:
-      file: services/arr-stack/bazarr/docker-compose.yml
+      file: services/media-services/bazarr/docker-compose.yml
       service: bazarr
     depends_on:
       lidarr:
         condition: service_healthy
   jellyfin:
     extends:
-      file: services/jellyfin/docker-compose.yml
+      file: services/media-services/jellyfin/docker-compose.yml
       service: jellyfin
     depends_on:
       bazarr:
