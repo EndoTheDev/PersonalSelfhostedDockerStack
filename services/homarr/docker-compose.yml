@@ -12,6 +12,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homarr.rule=Host(`homarr.${DOMAIN}`)"
+      - "traefik.http.routers.homarr.middlewares=auth@file"
       - "traefik.http.services.homarr.loadbalancer.server.port=7575"
     networks:
       - services

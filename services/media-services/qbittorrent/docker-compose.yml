@@ -6,7 +6,7 @@ services:
       - PUID=1001
       - PGID=1001
       - TZ=${TIMEZONE}
-      - WEBUI_ADDRESS=0.0.0.0 
+      - WEBUI_ADDRESS=0.0.0.0
       - WEBUI_PORT=8080
       - WEBUI_CSRF_PROTECTION_ENABLED=false
       - TORRENTING_PORT=6881
@@ -16,6 +16,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${DOMAIN}`)"
+      - "traefik.http.routers.qbittorrent.middlewares=auth@file"
       - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
     ports:
       - "6881:6881"

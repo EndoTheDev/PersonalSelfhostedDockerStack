@@ -13,6 +13,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${DOMAIN}`)"
+      - "traefik.http.routers.sonarr.middlewares=auth@file"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
     networks:
       - services

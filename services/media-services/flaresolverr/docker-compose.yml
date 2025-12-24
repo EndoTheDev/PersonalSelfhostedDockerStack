@@ -12,6 +12,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.${DOMAIN}`)"
+      - "traefik.http.routers.flaresolverr.middlewares=auth@file"
       - "traefik.http.services.flaresolverr.loadbalancer.server.port=8191"
     networks:
       - services

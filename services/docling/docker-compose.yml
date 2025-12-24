@@ -7,6 +7,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.docling.rule=Host(`docling.${DOMAIN}`)"
+      - "traefik.http.routers.docling.middlewares=auth@file"
       - "traefik.http.services.docling.loadbalancer.server.port=5001"
     networks:
       - services

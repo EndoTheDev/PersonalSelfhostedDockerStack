@@ -17,11 +17,18 @@ services:
       - N8N_NATIVE_PYTHON_RUNNER=true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`n8n.${DOMAIN}`)"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+      # Middleware for headers
       - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Host=n8n.${DOMAIN}"
-      - "traefik.http.routers.n8n.middlewares=n8n-headers"
+      # Router 1: Webhooks (Public) - Higher priority by rule length
+      - "traefik.http.routers.n8n-webhooks.rule=Host(`n8n.${DOMAIN}`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`))"
+      - "traefik.http.routers.n8n-webhooks.middlewares=n8n-headers"
+      - "traefik.http.routers.n8n-webhooks.service=n8n"
+      # Router 2: UI (Protected)
+      - "traefik.http.routers.n8n-secure.rule=Host(`n8n.${DOMAIN}`)"
+      - "traefik.http.routers.n8n-secure.middlewares=n8n-headers,auth@file"
+      - "traefik.http.routers.n8n-secure.service=n8n"
     networks:
       - services
     restart: unless-stopped
