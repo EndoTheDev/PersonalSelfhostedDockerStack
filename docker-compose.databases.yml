@@ -8,6 +8,10 @@ services:
     extends:
       file: services/databases/qdrant/docker-compose.yml
       service: qdrant
+  mindsdb:
+    extends:
+      file: services/mindsdb/docker-compose.yml
+      service: mindsdb
 
 networks:
   services:
