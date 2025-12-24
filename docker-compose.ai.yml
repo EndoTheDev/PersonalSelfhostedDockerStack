@@ -12,6 +12,10 @@ services:
     extends:
       file: services/n8n/docker-compose.yml
       service: task-runners
+  docling:
+    extends:
+      file: services/docling/docker-compose.yml
+      service: docling
 
 networks:
   services:

@@ -32,10 +32,6 @@ services:
     extends:
       file: services/pairdrop/docker-compose.yml
       service: pairdrop
-  docling:
-    extends:
-      file: services/docling/docker-compose.yml
-      service: docling
   excalidraw:
     extends:
       file: services/excalidraw/docker-compose.yml
