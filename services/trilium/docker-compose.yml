@@ -10,6 +10,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.trilium.rule=Host(`trilium.${DOMAIN}`)"
       - "traefik.http.services.trilium.loadbalancer.server.port=8080"
+      - "traefik.http.routers.trilium.middlewares=auth@file"
     networks:
       - services
     restart: unless-stopped
