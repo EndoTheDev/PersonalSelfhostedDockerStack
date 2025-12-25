@@ -6,6 +6,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.it-tools.rule=Host(`it-tools.${DOMAIN}`)"
       - "traefik.http.services.it-tools.loadbalancer.server.port=80"
+      - "traefik.http.routers.it-tools.middlewares=auth@file"
     networks:
       - services
     restart: unless-stopped
