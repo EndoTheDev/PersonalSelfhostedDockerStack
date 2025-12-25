@@ -16,8 +16,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.arcane.rule=Host(`arcane.${DOMAIN}`)"
-      - "traefik.http.routers.arcane.middlewares=auth@file"
       - "traefik.http.services.arcane.loadbalancer.server.port=3552"
+      - "traefik.http.routers.arcane.middlewares=auth@file"
     networks:
       - services
     restart: unless-stopped

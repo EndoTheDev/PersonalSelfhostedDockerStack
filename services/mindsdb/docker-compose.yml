@@ -9,8 +9,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mindsdb.rule=Host(`mindsdb.${DOMAIN}`)"
-      - "traefik.http.routers.mindsdb.middlewares=auth@file,mindsdb-headers"
       - "traefik.http.services.mindsdb.loadbalancer.server.port=47334"
+      - "traefik.http.routers.mindsdb.middlewares=auth@file,mindsdb-headers"
       - "traefik.http.middlewares.mindsdb-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.middlewares.mindsdb-headers.headers.customrequestheaders.X-Forwarded-Host=mindsdb.${DOMAIN}"
     networks:

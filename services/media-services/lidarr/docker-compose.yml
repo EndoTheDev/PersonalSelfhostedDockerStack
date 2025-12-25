@@ -13,8 +13,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lidarr.rule=Host(`lidarr.${DOMAIN}`)"
-      - "traefik.http.routers.lidarr.middlewares=auth@file"
       - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
+      - "traefik.http.routers.lidarr.middlewares=auth@file"
     networks:
       - services
     restart: unless-stopped

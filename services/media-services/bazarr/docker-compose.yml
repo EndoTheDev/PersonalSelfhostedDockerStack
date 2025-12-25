@@ -13,8 +13,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bazarr.rule=Host(`bazarr.${DOMAIN}`)"
-      - "traefik.http.routers.bazarr.middlewares=auth@file"
       - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+      - "traefik.http.routers.bazarr.middlewares=auth@file"
     networks:
       - services
     restart: unless-stopped
