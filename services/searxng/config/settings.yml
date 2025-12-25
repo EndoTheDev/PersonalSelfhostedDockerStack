@@ -1,0 +1,37 @@
+use_default_settings: true
+
+general:
+  instance_name: 'searxng'
+  base_url: 'https://searxng.endothe.dev'
+
+search:
+  autocomplete: 'google'
+  autocomplete_min: 2
+  formats:
+    - html
+    - json
+
+server:
+  secret_key: 'a2fb23f1b02e6ee83875b09826990de0f6bd908b6638e8c10277d415f6ab852b' # Is overwritten by ${SEARXNG_SECRET}
+
+redis:
+  url: redis://redis:6379/0
+
+outgoing:
+  request_timeout: 5.0
+  max_request_timeout: 15.0
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true
+
+engines:
+  - name: duckduckgo
+    disabled: true
+  - name: google
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: wolframalpha
+    disabled: false
+  - name: wikipedia
+    disabled: true

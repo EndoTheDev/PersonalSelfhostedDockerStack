@@ -11,9 +11,13 @@ developement/website
 # Data directories (persistent storage)
 **/data/
 **/config/data/
+**/config/.cache/
+**/config/.aspnet/
 **/logs/
 **/cache/
-**/config/
+**/config/db
+**/config/redis
+**/**/config.yml
 
 # Temporary files
 *.tmp

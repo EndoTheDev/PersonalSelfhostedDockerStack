@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    cors:
+      headers:
+        accessControlAllowOriginList: ["*"]
+        accessControlAllowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        accessControlAllowHeaders: ["*"]
+        accessControlExposeHeaders: ["Content-Length"]
+        accessControlMaxAge: 3600
