@@ -1,17 +1,25 @@
 name: services
 services:
+  excalidraw:
+    extends:
+      file: services/excalidraw/docker-compose.yml
+      service: excalidraw
+  filebrowser:
+    extends:
+      file: services/filebrowser/docker-compose.yml
+      service: filebrowser
   homarr:
     extends:
       file: services/homarr/docker-compose.yml
       service: homarr
-  website:
+  it-tools:
     extends:
-      file: development/website/docker-compose.yml
-      service: website
-  vaultwarden:
+      file: services/it-tools/docker-compose.yml
+      service: it-tools
+  pairdrop:
     extends:
-      file: services/vaultwarden/docker-compose.yml
-      service: vaultwarden
+      file: services/pairdrop/docker-compose.yml
+      service: pairdrop
   searxng:
     extends:
       file: services/searxng/docker-compose.yml
@@ -20,22 +28,14 @@ services:
     extends:
       file: services/trilium/docker-compose.yml
       service: trilium
-  filebrowser:
+  vaultwarden:
     extends:
-      file: services/filebrowser/docker-compose.yml
-      service: filebrowser
-  pairdrop:
+      file: services/vaultwarden/docker-compose.yml
+      service: vaultwarden
+  website:
     extends:
-      file: services/pairdrop/docker-compose.yml
-      service: pairdrop
-  excalidraw:
-    extends:
-      file: services/excalidraw/docker-compose.yml
-      service: excalidraw
-  it-tools:
-    extends:
-      file: services/it-tools/docker-compose.yml
-      service: it-tools
+      file: development/website/docker-compose.yml
+      service: website
 
 networks:
   services:
