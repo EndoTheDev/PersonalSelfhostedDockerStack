@@ -1,5 +1,4 @@
 developement/website
-**/prunemate/config/
 
 # Environment and secrets
 .env
@@ -18,6 +17,7 @@ developement/website
 **/cache/
 **/config/db
 **/config/redis
+**/prunemate/config/
 **/**/config.yml
 
 # Temporary files
