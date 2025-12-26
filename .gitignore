@@ -1,4 +1,5 @@
 developement/website
+**/prunemate/config/
 
 # Environment and secrets
 .env

@@ -1,0 +1,20 @@
+services:
+  prunemate:
+    image: prunemate-arm64
+    container_name: prunemate
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/config
+      - ./logs:/var/log
+    environment:
+      - TZ=${TIMEZONE}
+      - PRUNEMATE_TZ=${TIMEZONE}
+      - PRUNEMATE_TIME_24H=true
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prunemate.rule=Host(`prunemate.${DOMAIN}`)
+      - traefik.http.services.prunemate.loadbalancer.server.port=8080
+      - "traefik.http.routers.prunemate.middlewares=auth@file"
+    networks:
+      - services
+    restart: unless-stopped

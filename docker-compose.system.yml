@@ -24,6 +24,10 @@ services:
     extends:
       file: services/pihole/docker-compose.yml
       service: pihole
+  prunemate:
+    extends:
+      file: services/prunemate/docker-compose.yml
+      service: prunemate
 
 networks:
   services:
