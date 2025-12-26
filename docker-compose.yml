@@ -20,10 +20,6 @@ services:
     extends:
       file: services/trilium/docker-compose.yml
       service: trilium
-  tududi:
-    extends:
-      file: services/tududi/docker-compose.yml
-      service: tududi
   filebrowser:
     extends:
       file: services/filebrowser/docker-compose.yml
