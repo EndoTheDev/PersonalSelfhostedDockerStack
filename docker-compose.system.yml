@@ -16,18 +16,18 @@ services:
     extends:
       file: services/pocket-id/docker-compose.yml
       service: pocket-id
-  adguardhome:
-    extends:
-      file: services/adguardhome/docker-compose.yml
-      service: adguardhome
-  pihole:
-    extends:
-      file: services/pihole/docker-compose.yml
-      service: pihole
   prunemate:
     extends:
       file: services/prunemate/docker-compose.yml
       service: prunemate
+  # adguardhome:
+  #   extends:
+  #     file: services/adguardhome/docker-compose.yml
+  #     service: adguardhome
+  # pihole:
+  #   extends:
+  #     file: services/pihole/docker-compose.yml
+  #     service: pihole
 
 networks:
   services:
