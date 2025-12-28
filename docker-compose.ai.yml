@@ -16,6 +16,10 @@ services:
     extends:
       file: services/docling/docker-compose.yml
       service: docling
+  perplexica:
+    extends:
+      file: services/perplexica/docker-compose.yml
+      service: perplexica
 
 networks:
   services:

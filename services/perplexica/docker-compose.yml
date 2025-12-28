@@ -1,0 +1,20 @@
+services:
+  perplexica:
+    container_name: perplexica
+    image: itzcrazykns1337/perplexica:latest
+    volumes:
+      - ./data:/home/perplexica/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.perplexica.rule=Host(`perplexica.${DOMAIN}`)"
+      - "traefik.http.services.perplexica.loadbalancer.server.port=3000"
+      - "traefik.http.routers.perplexica.middlewares=auth@file"
+    networks:
+      - services
+    restart: unless-stopped
+
+volumes:
+  data:
+    name: "perplexica-data"
+  uploads:
+    name: "perplexica-uploads"
