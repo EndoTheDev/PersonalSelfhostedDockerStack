@@ -12,6 +12,10 @@ services:
     extends:
       file: services/databases/mindsdb/docker-compose.yml
       service: mindsdb
+  mariadb:
+    extends:
+      file: services/databases/mariadb/docker-compose.yml
+      service: mariadb
 
 networks:
   services:

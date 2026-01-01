@@ -1,0 +1,27 @@
+services:
+  seafile:
+    container_name: seafile
+    image: seafileltd/seafile-mc:latest
+    environment:
+      - DB_HOST=mariadb
+      - DB_ROOT_PASSWD=${MARIADB_ROOT_PASSWORD}
+      - DB_USER=seafile
+      - DB_PASSWD=${MARIADB_SEAFILE_PASSWORD}
+      - DB_NAME=seafile
+      - SEAFILE_SERVER_HOSTNAME=seafile.${DOMAIN}
+      - SEAFILE_SERVER_PROTOCOL=https
+      - SEAFILE_ADMIN_EMAIL=${SEAFILE_ADMIN_EMAIL}
+      - SEAFILE_ADMIN_PASSWORD=${SEAFILE_ADMIN_PASSWORD}
+      - SEAFILE_SERVER_HOSTNAME=seafile.${DOMAIN}
+      - TIME_ZONE=${TIMEZONE}
+      - ALLOWED_HOSTS=seafile.${DOMAIN},.${DOMAIN}
+      - CSRF_TRUSTED_ORIGINS=https://seafile.${DOMAIN}
+    volumes:
+      - ./data:/shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.seafile.rule=Host(`seafile.${DOMAIN}`)"
+      - "traefik.http.services.seafile.loadbalancer.server.port=80"
+    networks:
+      - services
+    restart: unless-stopped

@@ -1,0 +1,19 @@
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.11
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MYSQL_USER=seafile
+      - MYSQL_PASSWORD=${MARIADB_SEAFILE_PASSWORD}
+      - MYSQL_DATABASE=seafile
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - services
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
