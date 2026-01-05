@@ -1,7 +1,7 @@
 services:
   traefik-forward-auth:
     container_name: traefik-forward-auth
-    image: ghcr.io/italypaleale/traefik-forward-auth:4
+    image: ghcr.io/italypaleale/traefik-forward-auth:latest
     volumes:
       - /home/endo/Docker/services/traefik-forward-auth/config/config.yml:/etc/traefik-forward-auth/config.yaml:ro
     labels:
