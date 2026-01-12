@@ -6,6 +6,17 @@ services:
       - ./data:/app/backend/data
     environment:
       - REDIS_URL=${REDIS_URL}/${REDIS_DB_WEBUI}
+        # OIDC Configuration
+      - OPENID_PROVIDER_URL=https://pocket-id.${DOMAIN}/.well-known/openid-configuration
+      - OAUTH_CLIENT_ID=${OPENWEBUI_POCKETID_ID}
+      - OAUTH_CLIENT_SECRET=${OPENWEBUI_POCKETID_SECRET}
+      - OPENID_REDIRECT_URI=https://open-webui.${DOMAIN}/oauth/oidc/callback
+      # - OAUTH_PROVIDER_NAME=PocketID
+      - OAUTH_CODE_CHALLENGE_METHOD=S256
+      # Authentication Settings
+      - ENABLE_OAUTH_SIGNUP=true
+      - ENABLE_LOGIN_FORM=false
+      - ENABLE_PASSWORD_AUTH=false
     extra_hosts:
       - "host.docker.internal:host-gateway"
     labels:
