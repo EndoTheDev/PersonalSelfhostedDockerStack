@@ -4,6 +4,7 @@ services:
     image: docker.n8n.io/n8nio/n8n:next
     volumes:
       - ./data:/home/node/.n8n
+      - ./hooks.js:/home/node/hooks.js
     environment:
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_HOST=${N8N_HOST}
@@ -15,23 +16,24 @@ services:
       - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
       - N8N_RUNNERS_AUTH_TOKEN=your-secret-here
       - N8N_NATIVE_PYTHON_RUNNER=true
+      - EXTERNAL_HOOK_FILES=/home/node/hooks.js
+      - OIDC_ISSUER_URL=https://pocket-id.${DOMAIN}
+      - OIDC_CLIENT_ID=${N8N_POCKETID_ID}
+      - OIDC_CLIENT_SECRET=${N8N_POCKETID_SECRET}
+      - OIDC_REDIRECT_URI=https://n8n.${DOMAIN}/auth/oidc/callback
+      - N8N_ADDITIONAL_NON_UI_ROUTES=auth
+      - EXTERNAL_FRONTEND_HOOKS_URLS=/assets/oidc-frontend-hook.js
+      - OIDC_SCOPES=openid email profile groups
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.${DOMAIN}`)"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
-      # Middleware for headers
-      - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.middlewares.n8n-headers.headers.customrequestheaders.X-Forwarded-Host=n8n.${DOMAIN}"
-      # Router 1: Webhooks (Public) - Higher priority by rule length
-      - "traefik.http.routers.n8n-webhooks.rule=Host(`n8n.${DOMAIN}`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`))"
-      - "traefik.http.routers.n8n-webhooks.middlewares=n8n-headers"
-      - "traefik.http.routers.n8n-webhooks.service=n8n"
-      # Router 2: UI (Protected)
-      - "traefik.http.routers.n8n-secure.rule=Host(`n8n.${DOMAIN}`)"
-      - "traefik.http.routers.n8n-secure.middlewares=n8n-headers,auth@file"
-      - "traefik.http.routers.n8n-secure.service=n8n"
+      # - "traefik.http.routers.n8n.middlewares=auth@file"
+
     networks:
       - services
     restart: unless-stopped
+
   task-runners:
     image: n8nio/runners:1.111.0
     container_name: n8n-runners
