@@ -1,0 +1,7 @@
+http:
+  middlewares:
+    searxng-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-For: ""
+          X-Real-IP: ""
