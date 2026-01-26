@@ -1,0 +1,8 @@
+# Build artifacts
+build.log
+
+# Config (contains tokens/secrets)
+config/
+
+# Workspace (agent runtime data)
+workspace/

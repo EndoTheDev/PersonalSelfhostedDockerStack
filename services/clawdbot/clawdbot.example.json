@@ -1,0 +1,97 @@
+{
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "REPLACE_WITH_SECURE_TOKEN"
+    },
+    "port": 18789,
+    "bind": "lan",
+    "trustedProxies": ["172.20.0.0/16", "10.0.0.0/8"],
+    "controlUi": {
+      "allowInsecureAuth": true
+    }
+  },
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://YOUR_OLLAMA_HOST:11434/v1",
+        "models": [
+          {
+            "id": "qwen3-vl:235b-cloud",
+            "name": "Qwen3 VL Vision",
+            "api": "openai-responses",
+            "reasoning": false,
+            "input": ["text", "image"],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "github-copilot/grok-code-fast-1",
+        "fallbacks": [
+          "github-copilot/claude-haiku-4.5",
+          "github-copilot/claude-sonnet-4.5",
+          "github-copilot/claude-opus-4.5"
+        ]
+      },
+      "imageModel": {
+        "primary": "ollama/qwen3-vl:235b-cloud"
+      },
+      "workspace": "/home/node/clawd",
+      "memorySearch": {
+        "enabled": true,
+        "provider": "openai",
+        "remote": {
+          "baseUrl": "http://YOUR_OLLAMA_HOST:11434/v1",
+          "apiKey": "ollama"
+        },
+        "model": "Qwen3-Embedding-0.6B-GGUF:Q8_0"
+      },
+      "compaction": { "mode": "safeguard" },
+      "maxConcurrent": 4,
+      "subagents": { "maxConcurrent": 8 }
+    }
+  },
+  "tools": {
+    "web": {
+      "search": { "enabled": false },
+      "fetch": { "enabled": true }
+    },
+    "elevated": {
+      "enabled": true,
+      "allowFrom": { "webchat": ["*"] }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "approvals": {
+    "exec": { "enabled": false }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": { "enabled": true },
+        "command-logger": { "enabled": true },
+        "session-memory": { "enabled": true }
+      }
+    }
+  }
+}
