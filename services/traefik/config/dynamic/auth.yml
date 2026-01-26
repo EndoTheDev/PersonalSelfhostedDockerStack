@@ -2,7 +2,7 @@ http:
   middlewares:
     auth:
       forwardAuth:
-        address: "http://traefik-forward-auth:4181"
+        address: "http://traefik-forward-auth:4181/portals/main"
         authResponseHeaders:
           - "X-Forwarded-User"
           - "X-Forwarded-Displayname"
