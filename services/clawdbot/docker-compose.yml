@@ -1,0 +1,21 @@
+services:
+  clawdbot:
+    container_name: clawdbot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clawdbot:local
+    environment:
+      - TZ=${TIMEZONE}
+      - CLAWDBOT_GATEWAY_TOKEN=${CLAWDBOT_GATEWAY_TOKEN}
+    volumes:
+      - ./config:/home/node/.clawdbot:rw
+      - ./workspace:/home/node/clawd:rw
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.clawdbot.rule=Host(`clawdbot.${DOMAIN}`)"
+      - "traefik.http.services.clawdbot.loadbalancer.server.port=18789"
+      - "traefik.http.routers.clawdbot.middlewares=auth@file"
+    networks:
+      - services
+    restart: unless-stopped
