@@ -24,6 +24,10 @@ services:
     extends:
       file: services/clawdbot/docker-compose.yml
       service: clawdbot
+  opencode:
+    extends:
+      file: services/opencode/docker-compose.yml
+      service: opencode
 
 networks:
   services:

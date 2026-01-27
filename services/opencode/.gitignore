@@ -1,0 +1,5 @@
+# Runtime data (sessions, auth tokens)
+data/
+
+# Config may contain sensitive data
+config/

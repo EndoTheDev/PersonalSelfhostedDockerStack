@@ -1,0 +1,21 @@
+services:
+  opencode:
+    container_name: opencode
+    image: ghcr.io/anomalyco/opencode:latest
+    command: ["web", "--hostname", "0.0.0.0", "--port", "4096"]
+    working_dir: /workspace
+    environment:
+      - TZ=${TIMEZONE}
+      - TERM=xterm-256color
+    volumes:
+      - ./config:/root/.config/opencode
+      - ./data:/root/.local/share/opencode
+      - ./workspace:/workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.opencode.rule=Host(`opencode.${DOMAIN}`)"
+      - "traefik.http.services.opencode.loadbalancer.server.port=4096"
+      - "traefik.http.routers.opencode.middlewares=auth@file"
+    networks:
+      - services
+    restart: unless-stopped
