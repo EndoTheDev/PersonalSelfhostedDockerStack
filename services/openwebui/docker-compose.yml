@@ -1,10 +1,11 @@
 services:
   openwebui:
     container_name: openwebui
-    image: ghcr.io/open-webui/open-webui:dev
+    image: ghcr.io/open-webui/open-webui:latest
     volumes:
       - ./data:/app/backend/data
     environment:
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - REDIS_URL=${REDIS_URL}/${REDIS_DB_WEBUI}
         # OIDC Configuration
       - OPENID_PROVIDER_URL=https://pocket-id.${DOMAIN}/.well-known/openid-configuration
