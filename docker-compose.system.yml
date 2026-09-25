@@ -16,10 +16,10 @@ services:
     extends:
       file: services/pocket-id/docker-compose.yml
       service: pocket-id
-  prunemate:
-    extends:
-      file: services/prunemate/docker-compose.yml
-      service: prunemate
+  # prunemate:
+  #   extends:
+  #     file: services/prunemate/docker-compose.yml
+  #     service: prunemate
   # adguardhome:
   #   extends:
   #     file: services/adguardhome/docker-compose.yml
