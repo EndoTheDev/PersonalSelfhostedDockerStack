@@ -1,0 +1,26 @@
+services:
+  keypool:
+    build: .
+    container_name: keypool
+    restart: unless-stopped
+    environment:
+      - KEYPOOL_MASTER_KEY=${KEYPOOL_MASTER_KEY}
+      - KEYPOOL_KEYS=${KEYPOOL_KEYS}
+      - KEYPOOL_UPSTREAM=${KEYPOOL_UPSTREAM:-https://ollama.com}
+      - KEYPOOL_COOLDOWN=${KEYPOOL_COOLDOWN:-60s}
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:11435:11435"
+      - "100.101.126.30:11435:11435"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keypool.rule=Host(`keypool.${DOMAIN}`)"
+      - "traefik.http.routers.keypool.middlewares=auth@file"
+      - "traefik.http.services.keypool.loadbalancer.server.port=11435"
+    networks:
+      - services
+
+networks:
+  services:
+    external: true

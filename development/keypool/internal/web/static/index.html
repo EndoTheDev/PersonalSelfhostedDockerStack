@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>keypool</title>
+<style>
+  :root{color-scheme:light dark}
+  :root{
+    --bg:#0d1117; --card:#161b22; --border:#30363d; --text:#e6edf3; --dim:#7d8590; --rowline:#21262d; --logline:#161b22;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f6f8fa; --card:#ffffff; --border:#d0d7de; --text:#1f2328; --dim:#59636e; --rowline:#eaeef2; --logline:#f0f3f6;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font:14px/1.5 ui-monospace,Menlo,monospace;background:var(--bg);color:var(--text);padding:20px;max-width:1100px;margin:0 auto}
+  h1{font-size:20px;margin-bottom:4px}
+  h1 small{color:var(--dim);font-weight:400;font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+  .card .num{font-size:24px;font-weight:700}
+  .card .lbl{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 20px}
+  th{color:var(--dim);text-align:left;font-weight:400;font-size:11px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border)}
+  td{padding:6px 8px;border-bottom:1px solid var(--rowline)}
+  .ok{color:#3fb950}.warn{color:#d29922}.err{color:#f85149}.dim{color:var(--dim)}
+  #log{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;height:340px;overflow-y:auto;font-size:12px}
+  #log div{padding:1px 0;border-bottom:1px solid var(--logline);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar{height:6px;background:var(--rowline);border-radius:3px;overflow:hidden;display:inline-block;width:120px;vertical-align:middle;margin-right:8px}
+  .bar i{display:block;height:100%;background:#3fb950}
+  input,button,select{font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px}
+  button{cursor:pointer}button:hover{border-color:var(--dim)}
+  section{margin-top:28px}
+  section>h2{font-size:15px;margin-bottom:10px}
+  form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .row{display:flex;gap:10px;align-items:center}
+  #cfg th{width:160px}
+  .qrow{display:flex;gap:8px;align-items:center;line-height:22px}
+  .qlbl{width:52px;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+</style>
+</head>
+<body>
+<h1>keypool <small>ollama-cloud key rotation proxy</small></h1>
+<div class="dim" id="upstream"></div>
+
+<div class="grid" id="stats-cards"></div>
+
+<section><h2>Keys</h2>
+<table id="keys"><thead><tr><th>Key</th><th>Status</th><th>Uses</th><th>Last used</th><th>Quota</th><th></th></tr></thead><tbody></tbody></table>
+<div class="dim" id="shared-countdowns"></div>
+<form onsubmit="return addKey(event)">
+  <input id="k-name" placeholder="Name (optional)" size="12">
+  <input id="k-value" placeholder="API key value" size="40" required>
+  <button>Add key</button>
+</form>
+</section>
+
+<section><h2>Metrics</h2>
+<table id="metrics"></table>
+</section>
+
+<section><h2>Config</h2>
+<table id="cfg"></table>
+<form onsubmit="return saveCfg(event)">
+  <select id="c-sel">
+    <option value="lru">lru</option>
+    <option value="least_used">least_used</option>
+  </select>
+  <input id="c-cooldown" placeholder="Cooldown (s)" size="12">
+  <button>Save</button>
+  <span class="dim">upstream + key selection + cooldown; port needs restart</span>
+</form>
+</section>
+
+<section><h2>Live log <span class="dim" id="conn"></span></h2>
+<div id="log"></div>
+</section>
+
+<script>
+let cfgCache={};
+const $=(s,e=document)=>e.querySelector(s), esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=t=>t?new Date(t).toLocaleTimeString():'—';
+
+let lastKeys = null;
+function renderKeys(keys){
+  lastKeys = keys;
+  renderSharedCountdowns(keys);
+  $('#keys tbody').innerHTML = keys.map(k=>{
+    const st = k.cooling?'<span class="err">cooling</span>':'<span class="ok">active</span>';
+    return `<tr><td>#${k.id}${k.name?' '+esc(k.name):''}</td><td>${st}</td><td>${k.use_count}</td><td class="dim">${fmt(k.last_used)}</td><td>${quotaBars(k, keys)}</td><td><button onclick="delKey(${k.id})">remove</button></td></tr>`;
+  }).join('');
+}
+function quotaBars(k, allKeys){
+  if(!k.quota_known) return '<span class="dim">…</span>';
+  const shared = sameResetsForAll(allKeys);
+  let out = quotaRow('Session', k.session_remaining, shared ? null : k.session_resets_at)
+          + quotaRow('Weekly', k.weekly_remaining, shared ? null : k.weekly_resets_at);
+  if(k.purchased_usd > 0) out += `<div class="qrow"><span class="qlbl">Purchased</span>$${k.purchased_usd.toFixed(2)} credit</div>`;
+  return out;
+}
+// ponytail: shared countdown assumes one Ollama account - all keys reset at the
+// same time. If keys ever come from different accounts (resets diverge > 1 min),
+// fall back to per-key countdown lines.
+function sameResetsForAll(keys){
+  const s = keys.filter(k=>k.quota_known).map(k=>k.session_resets_at).filter(Boolean);
+  const w = keys.filter(k=>k.quota_known).map(k=>k.weekly_resets_at).filter(Boolean);
+  // Math.max on date STRINGS coerces to NaN - compare as epoch millis
+  const spread = a => Math.max(...a.map(Date.parse)) - Math.min(...a.map(Date.parse)) < 60000;
+  return s.length === keys.filter(k=>k.quota_known).length
+      && w.length === keys.filter(k=>k.quota_known).length
+      && spread(s) && spread(w);
+}
+function renderSharedCountdowns(keys){
+  const known = keys.filter(k=>k.quota_known);
+  const el = $('#shared-countdowns');
+  if(!known.length){ el.textContent=''; return; }
+  const s = known.map(k=>k.session_resets_at).filter(Boolean);
+  const w = known.map(k=>k.weekly_resets_at).filter(Boolean);
+  const parts = [];
+  if(s.length) parts.push('session ' + countdown(s[0]));
+  if(w.length) parts.push('weekly ' + countdown(w[0]));
+  el.textContent = parts.join(' · ');
+}
+function quotaRow(label, remaining, resetsAt){
+  if(remaining == null) return `<div class="qrow"><span class="qlbl">${label}</span><span class="dim">—</span></div>`;
+  const used = Math.round(100 - remaining);
+  return `<div class="qrow"><span class="qlbl">${label}</span><span class="bar"><i style="width:${used}%;background:${barColor(used)}"></i></span>${used}% used</div>`
+       + `<div class="qrow"><span class="qlbl"></span><span class="dim">${countdown(resetsAt)}</span></div>`;
+}
+function countdown(resetsAt){
+  if(!resetsAt) return '';
+  const ms = new Date(resetsAt) - Date.now();
+  if(ms <= 0) return 'resetting…';
+  const mins = Math.floor(ms/60000), h = Math.floor(mins/60), d = Math.floor(h/24);
+  if(d > 0) return `resets in ${d}d ${h%24}h`;
+  if(h > 0) return `resets in ${h}h ${mins%60}m`;
+  return `resets in ${mins}m`;
+}
+function barColor(pct){
+  if(pct >= 80) return '#f85149';
+  if(pct >= 50) return '#d29922';
+  return '#3fb950';
+}
+
+function renderStats(s){
+  const cards=[['Requests',s.total],['OK',s.ok],['429',s.rate_429],['5xx',s.server_5xx],['Retries',s.retries]];
+  $('#stats-cards').innerHTML=cards.map(([l,n])=>`<div class="card"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join('');
+}
+
+function logLine(entry){
+  const cls = entry.status>=500?'err':entry.status>=400?'warn':'ok';
+  const el=document.createElement('div');
+  el.innerHTML=`<span class="dim">${fmt(entry.time)}</span> <span class="${cls}">${entry.status}</span> key#${entry.key} ${esc(entry.method)} ${esc(entry.path)} <span class="dim">${entry.latency_ms}ms</span>${entry.retried?' <span class="warn">(retried)</span>':''}`;
+  const log=$('#log'); log.prepend(el);
+  while(log.children.length>300) log.lastChild.remove();
+}
+
+let snapshotSeen=0;
+function onSse(msg){
+  const d=JSON.parse(msg);
+  if(d.keys) renderKeys(d.keys);
+  if(d.stats) renderStats(d.stats);
+  if(d.recent){ // fresh events since last snapshot
+    for(const e of d.recent.slice(0, d.recent.length-snapshotSeen)) logLine(e);
+    snapshotSeen=d.recent.length;
+  }
+}
+
+function addKey(ev){
+  ev.preventDefault();
+  const body={name:$('#k-name').value||'',plaintext:$('#k-value').value};
+  fetch('/admin/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(()=>{$('#k-value').value='';$('#k-name').value='';load();});
+  return false;
+}
+function delKey(id){ if(confirm('Remove key #'+id+'?')) fetch('/admin/keys/'+id,{method:'DELETE'}).then(load); }
+function saveCfg(ev){
+  ev.preventDefault();
+  const cur={...cfgCache};
+  if($('#c-cooldown').value) cur.cooldown=parseInt($('#c-cooldown').value,10);
+  cur.key_selection=$('#c-sel').value;
+  fetch('/admin/config',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(cur)}).then(()=>{$('#c-cooldown').value='';load();});
+  return false;
+}
+
+function load(){
+  fetch('/stats').then(r=>r.json()).then(d=>{renderKeys(d.keys||[]);renderStats(d.stats||{});});
+  fetch('/admin/config').then(r=>r.json()).then(c=>{
+    cfgCache=c;
+    $('#upstream').textContent='upstream '+c.upstream;
+    $('#cfg').innerHTML=Object.entries(c).map(([k,v])=>`<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('');
+    $('#c-sel').value=c.key_selection||'lru';
+  });
+  fetch('/admin/metrics').then(r=>r.json()).then(m=>{
+    const tot=m.totals||{};
+    const rows=[['Total requests',tot.requests],['Prompt tokens',tot.prompt_tokens],['Output tokens',tot.output_tokens],['Avg latency',tot.avg_latency_ms+' ms'],['Error rate',(tot.error_rate*100).toFixed(1)+'%']];
+    let html='<tr><th></th><th>count</th><th>prompt</th><th>output</th><th>avg ms</th></tr>';
+    for(const b of m.by_key||[]) html+=`<tr><td>${esc(b.key_name)}</td><td>${b.count}</td><td>${b.prompt_tokens}</td><td>${b.output_tokens}</td><td>${b.avg_latency_ms}</td></tr>`;
+    for(const b of m.by_model||[]) html+=`<tr><td class="dim">${esc(b.model)}</td><td>${b.count}</td><td>${b.prompt_tokens}</td><td>${b.output_tokens}</td><td>${b.avg_latency_ms}</td></tr>`;
+    $('#metrics').innerHTML=html;
+  });
+}
+
+function connect(){
+  const es=new EventSource('/events');
+  es.onopen=()=>{$('#conn').textContent='● connected';};
+  es.onmessage=e=>{try{onSse(e.data)}catch(err){}};
+  es.onerror=()=>{$('#conn').textContent='○ reconnecting…';};
+}
+load(); setInterval(load, 5000); connect();
+// countdown rows tick locally without waiting for the next snapshot push
+setInterval(()=>{ if(lastKeys) renderKeys(lastKeys); }, 30000);
+</script>
+</body>
+</html>
