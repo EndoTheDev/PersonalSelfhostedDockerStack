@@ -44,10 +44,14 @@ services:
     extends:
       file: development/check-key/docker-compose.yml
       service: check-key
-  bpm-tap-tempo:
+  check-bpm:
     extends:
       file: development/bpm-tap-tempo/docker-compose.yml
-      service: bpm-tap-tempo
+      service: check-bpm
+  check-db:
+    extends:
+      file: development/check-db/docker-compose.yml
+      service: check-db
   umami:
     extends:
       file: services/umami/docker-compose.yml
