@@ -52,6 +52,10 @@ services:
     extends:
       file: development/check-db/docker-compose.yml
       service: check-db
+  beatmatch-trainer:
+    extends:
+      file: development/beatmatch-trainer/docker-compose.yml
+      service: beatmatch-trainer
   umami:
     extends:
       file: services/umami/docker-compose.yml
