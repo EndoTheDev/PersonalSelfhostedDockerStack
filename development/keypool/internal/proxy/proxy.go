@@ -441,6 +441,10 @@ type stats struct {
 	// Distinct from server5xx: those got an HTTP response; these never did.
 	upstreamErr atomic.Int64
 
+	// Client-side cancellations (caller hung up mid-request). Normal
+	// traffic, tracked separately so the upstream card stays pure.
+	clientCancels atomic.Int64
+
 	mu                sync.Mutex // guards lastUpstreamErr + lastUpstreamAt
 	lastUpstreamErr   string
 	lastUpstreamAt    time.Time
@@ -450,10 +454,16 @@ func newStats(logSize int) *stats {
 	return &stats{log: newRingBuffer(logSize)}
 }
 
-// recordUpstreamError bumps the upstream-error counter and stores the short
-// error text for the snapshot. err may be nil (no-op).
+// recordUpstreamError records a network-class error on the upstream path.
+// Client-side cancellations (context.Canceled — the caller hung up before
+// ollama answered) are counted separately as clientCancels: they are normal
+// traffic (stop button, client timeout), not upstream faults.
 func (s *stats) recordUpstreamError(err error) {
 	if err == nil {
+		return
+	}
+	if errors.Is(err, context.Canceled) {
+		s.clientCancels.Add(1)
 		return
 	}
 	s.upstreamErr.Add(1)
@@ -763,6 +773,7 @@ type StatsSnapshot struct {
 	CompressedReqs int64 `json:"compressed_reqs"`
 	TokensSaved    int64 `json:"tokens_saved"`
 	UpstreamErrors int64 `json:"upstream_errors"`
+	ClientCancels  int64 `json:"client_cancels"`
 	// Last upstream network error (empty string if none yet) + unix seconds.
 	LastUpstreamError   string  `json:"last_upstream_error"`
 	LastUpstreamErrorAt float64 `json:"last_upstream_error_at"` // 0 = never
@@ -1737,6 +1748,7 @@ func (s *Server) Snapshot() Snapshot {
 			CompressedReqs: s.st.compressed.Load(),
 			TokensSaved:    s.st.saved.Load(),
 			UpstreamErrors: s.st.upstreamErr.Load(),
+			ClientCancels:  s.st.clientCancels.Load(),
 		},
 	}
 	lastErr, lastAt := s.st.upstreamErrInfo()

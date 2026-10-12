@@ -126,6 +126,29 @@ func TestRoundTripFailsCleanlyWhenUpstreamDead(t *testing.T) {
 	}
 }
 
+// Client cancellations must count as client_cancels, NOT upstream_errors.
+func TestContextCanceledCountsAsClientCancel(t *testing.T) {
+	st := newStats(16)
+	st.recordUpstreamError(context.Canceled)
+	if n := st.upstreamErr.Load(); n != 0 {
+		t.Fatalf("context.Canceled must not count as upstream error, got %d", n)
+	}
+	if n := st.clientCancels.Load(); n != 1 {
+		t.Fatalf("expected 1 client cancel, got %d", n)
+	}
+	// A real network error must land in the upstream bucket.
+	st.recordUpstreamError(io.ErrUnexpectedEOF)
+	if n := st.upstreamErr.Load(); n != 1 {
+		t.Fatalf("EOF must count as upstream error, got %d", n)
+	}
+	if n := st.clientCancels.Load(); n != 1 {
+		t.Fatalf("EOF must not change client cancels, got %d", n)
+	}
+	if msg, _ := st.upstreamErrInfo(); msg == "" {
+		t.Fatal("expected upstream error text recorded")
+	}
+}
+
 // Snapshot must carry the new upstream-error fields.
 func TestSnapshotCarriesUpstreamErrorFields(t *testing.T) {
 	up, _ := resetThenAnswer(t)

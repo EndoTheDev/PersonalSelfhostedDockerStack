@@ -150,7 +150,10 @@ function renderStats(s){
   $('#stats-cards').innerHTML=cards.map(([l,n])=>`<div class="card"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join('');
   if(s.last_upstream_error){
     const t=s.last_upstream_error_at?new Date(s.last_upstream_error_at*1000).toLocaleTimeString():'';
-    $('#last-upstream-err').innerHTML=`<span class="dim">${t}</span> <span class="err">${esc(s.last_upstream_error)}</span>`;
+    $('#last-upstream-err').innerHTML=`<span class="dim">${t}</span> <span class="err">${esc(s.last_upstream_error)}</span>${s.client_cancels?` <span class="dim">(client cancels: ${s.client_cancels} — not upstream)</span>`:''}`;
+    $('#last-upstream-err').style.display='block';
+  } else if(s.client_cancels) {
+    $('#last-upstream-err').innerHTML=`<span class="dim">client cancels: ${s.client_cancels} — not upstream</span>`;
     $('#last-upstream-err').style.display='block';
   } else {
     $('#last-upstream-err').style.display='none';
