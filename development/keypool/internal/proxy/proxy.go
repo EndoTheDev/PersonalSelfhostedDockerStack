@@ -436,10 +436,51 @@ type stats struct {
 	compressed atomic.Int64 // requests that were compressed
 	saved      atomic.Int64 // cumulative tokens saved
 	log        *ringBuffer
+
+	// Upstream network errors (exec failures — resets, stale-conn timeouts).
+	// Distinct from server5xx: those got an HTTP response; these never did.
+	upstreamErr atomic.Int64
+
+	mu                sync.Mutex // guards lastUpstreamErr + lastUpstreamAt
+	lastUpstreamErr   string
+	lastUpstreamAt    time.Time
 }
 
 func newStats(logSize int) *stats {
 	return &stats{log: newRingBuffer(logSize)}
+}
+
+// recordUpstreamError bumps the upstream-error counter and stores the short
+// error text for the snapshot. err may be nil (no-op).
+func (s *stats) recordUpstreamError(err error) {
+	if err == nil {
+		return
+	}
+	s.upstreamErr.Add(1)
+	s.mu.Lock()
+	s.lastUpstreamErr = errShort(err)
+	s.lastUpstreamAt = time.Now()
+	s.mu.Unlock()
+}
+
+// upstreamErrInfo returns the last upstream error text and its time.
+func (s *stats) upstreamErrInfo() (string, time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.lastUpstreamErr, s.lastUpstreamAt
+}
+
+// errShort reduces an upstream error to a short, stable classification used
+// in the dashboard (no full error chains — keep the UI line short).
+func errShort(err error) string {
+	msg := err.Error()
+	if i := strings.IndexByte(msg, ':'); i > 0 && i < 40 {
+		msg = msg[:i]
+	}
+	if len(msg) > 60 {
+		msg = msg[:60]
+	}
+	return msg
 }
 
 func (s *stats) record(status int, retried bool) {
@@ -721,6 +762,10 @@ type StatsSnapshot struct {
 	Retries        int64 `json:"retries"`
 	CompressedReqs int64 `json:"compressed_reqs"`
 	TokensSaved    int64 `json:"tokens_saved"`
+	UpstreamErrors int64 `json:"upstream_errors"`
+	// Last upstream network error (empty string if none yet) + unix seconds.
+	LastUpstreamError   string  `json:"last_upstream_error"`
+	LastUpstreamErrorAt float64 `json:"last_upstream_error_at"` // 0 = never
 }
 
 // InFlightEntry is one currently-running request. The dashboard shows these
@@ -808,6 +853,16 @@ func newRetryTransport(logf func(string, ...any), st *stats, srv *Server) *retry
 	return &retryTransport{
 		inner: &http.Transport{
 			ResponseHeaderTimeout: srv.timeout(), // kills connection stalls (default 60s)
+			IdleConnTimeout:      60 * time.Second,
+			ForceAttemptHTTP2:     true,
+			// Ollama's edge reaps idle/slow HTTP/2 connections. The health-check
+			// ping detects a dead connection within SendPingTimeout and closes
+			// it (PingTimeout) so a fresh one is dialed before a request lands
+			// on a stale connection.
+			HTTP2: &http.HTTP2Config{
+				SendPingTimeout: 30 * time.Second,
+				PingTimeout:     15 * time.Second,
+			},
 		},
 		logf: logf,
 		st:   st,
@@ -989,9 +1044,25 @@ func (t *retryTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	resp, err := t.exec(ctx, req, key, bodyBuf)
 	if err != nil {
+		// Network error before headers: a stale/reaped pooled connection is a
+		// likely cause (ollama's edge resets idle HTTP/2 conns). The body is
+		// already buffered, so one retry on a fresh connection + key is safe.
+		// Keys are NOT cooled down for network errors — the key is fine;
+		// the pooled connection was stale. Release only handles retryable
+		// HTTP statuses, so no unwind is needed here.
+		t.st.recordUpstreamError(err) // visible even when the retry recovers
+		if k2, i2, err2 := t.pool().Acquire(); err2 == nil {
+			resp2, err3 := t.exec(ctx, req, k2, bodyBuf)
+			if err3 == nil {
+				retryMsg := readErrorMessage(resp2)
+				t.pool().Release(i2, resp2.StatusCode, t.srv.cooldown())
+				return t.finalize(inFlightID, i2, resp2, cancel, method, path, start, model, true, retryMsg, baseMetrics)
+			}
+		}
 		// Upstream unreachable — return error to ReverseProxy, its
 		// ErrorHandler returns a clean 502 to the client.
 		cancel()
+		t.st.recordUpstreamError(err)
 		msg := "upstream unreachable"
 		var netErr net.Error
 		if errors.As(err, &netErr) && netErr.Timeout() {
@@ -1653,7 +1724,7 @@ func (s *Server) Snapshot() Snapshot {
 	s.poolMu.RLock()
 	pool := s.pool
 	s.poolMu.RUnlock()
-	return Snapshot{
+	r := Snapshot{
 		Keys:     pool.Snapshot(),
 		Recent:   s.st.log.Snapshot(),
 		InFlight: s.inFlightSnapshot(),
@@ -1665,8 +1736,15 @@ func (s *Server) Snapshot() Snapshot {
 			Retries:        s.st.retries.Load(),
 			CompressedReqs: s.st.compressed.Load(),
 			TokensSaved:    s.st.saved.Load(),
+			UpstreamErrors: s.st.upstreamErr.Load(),
 		},
 	}
+	lastErr, lastAt := s.st.upstreamErrInfo()
+	if lastErr != "" {
+		r.Stats.LastUpstreamError = lastErr
+		r.Stats.LastUpstreamErrorAt = float64(lastAt.UnixMilli()) / 1000
+	}
+	return r
 }
 
 // notify pushes the current snapshot to all SSE subscribers on /events.
@@ -1775,6 +1853,8 @@ func (s *Server) ListenAndServe(debug bool) error {
 		Transport: transport,
 		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
 			http.Error(w, `{"error":"upstream unreachable"}`, http.StatusBadGateway)
+			s.st.recordUpstreamError(err)
+			s.notify()
 			log.Printf("upstream error: %v", err)
 		},
 	}

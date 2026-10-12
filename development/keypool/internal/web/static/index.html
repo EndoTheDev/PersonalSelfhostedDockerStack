@@ -46,6 +46,7 @@
 <div class="dim" id="upstream"></div>
 
 <div class="grid" id="stats-cards"></div>
+<div id="last-upstream-err" style="display:none;margin-top:8px;font-size:0.85em"></div>
 
 <section><h2>Keys</h2>
 <table id="keys"><thead><tr><th>Key</th><th>Status</th><th>Uses</th><th>Last used</th><th>Quota</th><th></th></tr></thead><tbody></tbody></table>
@@ -145,8 +146,15 @@ function barColor(pct){
 }
 
 function renderStats(s){
-  const cards=[['Requests',s.total],['OK',s.ok],['429',s.rate_429],['5xx',s.server_5xx],['Retries',s.retries]];
+  const cards=[['Requests',s.total],['OK',s.ok],['429',s.rate_429],['5xx',s.server_5xx],['Retries',s.retries],['Upstream Err',s.upstream_errors]];
   $('#stats-cards').innerHTML=cards.map(([l,n])=>`<div class="card"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join('');
+  if(s.last_upstream_error){
+    const t=s.last_upstream_error_at?new Date(s.last_upstream_error_at*1000).toLocaleTimeString():'';
+    $('#last-upstream-err').innerHTML=`<span class="dim">${t}</span> <span class="err">${esc(s.last_upstream_error)}</span>`;
+    $('#last-upstream-err').style.display='block';
+  } else {
+    $('#last-upstream-err').style.display='none';
+  }
 }
 
 function logLine(entry){
